@@ -1,5 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 
 public class TravelApp {
   private JFrame frame;
@@ -31,6 +36,36 @@ public class TravelApp {
         cardLayout.show(contentPnl, panelName);
     }
     public static void main(String[] args) throws Exception {
+        try {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatIntelliJLaf());
+        } catch(Exception e) {
+            System.err.println("Failed to initialize LaF: " + e.getMessage());
+        }
+         try {
+            // Use class loader to find the font resource
+            URL fontURL = TravelApp.class.getClassLoader().getResource("fonts/Roboto-Regular.ttf");
+
+            if (fontURL != null) {
+                // Create the font using the input stream
+                InputStream fontStream = fontURL.openStream();
+                Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                customFont = customFont.deriveFont(25f); // Set the font size
+
+                // Apply font globally
+                UIManager.put("Button.font", customFont);
+                UIManager.put("Label.font", customFont);
+                UIManager.put("TextField.font", customFont);
+                UIManager.put("TextArea.font", customFont);
+            } else {
+                System.out.println("Font file not found!");
+            }
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+        //Font customFont = new Font("Helvetica", Font.PLAIN, 16);
+        //UIManager.put("Button.font", customFont);
+       // UIManager.put("Label.font", customFont);
+
         SwingUtilities.invokeLater(TravelApp::new);
     }
 }

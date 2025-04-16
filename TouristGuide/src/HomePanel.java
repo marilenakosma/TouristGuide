@@ -22,43 +22,51 @@ public class HomePanel extends JPanel {
     } catch (IOException e) {
         e.printStackTrace();  // Handle any IO exceptions
     }
-
-    // If you want to do any other setup, like layout, do it here...
-
-
-        
+ 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         //setBackground(Color.WHITE); // White background
 
         JLabel title = new JLabel("Welcome to Smart Travel Guide",SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        title.setFont(new Font("Verdana", Font.BOLD, 36));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton TranspBtn = new ButtonStyles("Transportation");
+        JButton TranspBtn = new JButton("Transportation");
+        TranspBtn.putClientProperty("JButton.buttonType", "roundRect");
+        TranspBtn.putClientProperty("JComponent.roundRect", true);
+        TranspBtn.setMaximumSize(new Dimension(300, 60));
         TranspBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         TranspBtn.addActionListener(e -> app.showPanel("Transportation"));
 
-        JButton AccBtn = new ButtonStyles("Accommodation");
+        JButton AccBtn = new JButton("Accommodation");
+        AccBtn.putClientProperty("JButton.buttonType", "roundRect");
+        AccBtn.putClientProperty("JComponent.roundRect", true);
+        AccBtn.setMaximumSize(new Dimension(300, 60));
         AccBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         AccBtn.addActionListener(e -> app.showPanel("Accommodation"));
 
-        JButton AttrBtn = new ButtonStyles("Attractions");
+        JButton AttrBtn = new JButton("Attractions");
+        AttrBtn.putClientProperty("JButton.buttonType", "roundRect");
+        AttrBtn.putClientProperty("JComponent.roundRect", true);
+        AttrBtn.setMaximumSize(new Dimension(300, 60));
         AttrBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         AttrBtn.addActionListener(e -> app.showPanel("Attractions"));
 
-        JButton MapBtn = new ButtonStyles("City Map");
+        JButton MapBtn = new JButton("City Map");
+        MapBtn.putClientProperty("JButton.buttonType", "roundRect");
+        MapBtn.putClientProperty("JComponent.roundRect", true);
+        MapBtn.setMaximumSize(new Dimension(300, 60));
         MapBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         MapBtn.addActionListener(e -> app.showPanel("City Map"));
 
         
         add(title);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
         add(TranspBtn);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(20));
         add(AccBtn);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(20));
         add(AttrBtn);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(20));
         add(MapBtn);
     }
     @Override
