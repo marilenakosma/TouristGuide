@@ -56,6 +56,11 @@ public class TravelApp {
                 UIManager.put("Label.font", customFont);
                 UIManager.put("TextField.font", customFont);
                 UIManager.put("TextArea.font", customFont);
+                UIManager.put("defaultFont", new Font("Inter", Font.PLAIN, 14)); // or any nice sans-serif
+                UIManager.put("Button.arc", 20);       // Rounder buttons
+                UIManager.put("Component.arc", 10);    // Rounder scroll panes, fields
+                UIManager.put("TextComponent.arc", 10);
+
             } else {
                 System.out.println("Font file not found!");
             }

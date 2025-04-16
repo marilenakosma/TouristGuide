@@ -27,7 +27,7 @@ public class HomePanel extends JPanel {
         //setBackground(Color.WHITE); // White background
 
         JLabel title = new JLabel("Welcome to Smart Travel Guide",SwingConstants.CENTER);
-        title.setFont(new Font("Verdana", Font.BOLD, 36));
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 36));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton TranspBtn = new JButton("Transportation");
