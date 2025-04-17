@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 public class TransportationPnl extends JPanel{
 
@@ -49,17 +48,7 @@ public class TransportationPnl extends JPanel{
         routeScrollPane.setBorder(BorderFactory.createTitledBorder("Available Routes"));
         add(routeScrollPane,BorderLayout.CENTER);
         // Optional: Map image (can be placed in the center or a different section)
-        JPanel mapPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.setColor(Color.LIGHT_GRAY);
-                g.fillRoundRect(0, 0, getWidth(),getHeight(),20,20); // Placeholder for map
-                g.setColor(Color.BLACK);
-                g.drawString("Map Placeholder", 10, 20);
-            }
-        };
-
+        JPanel mapPanel = new MapPnl();
         mapPanel.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
         mapPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         add(mapPanel,BorderLayout.EAST);

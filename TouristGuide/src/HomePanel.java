@@ -4,7 +4,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.net.URL;
 
-//C:/Users/Marilena/Documents/Uni/5o etos/10o/Erasmus/Prog.IV(MAE)/Images/back.png
 public class HomePanel extends JPanel {
     private Image backgroundImage;
     public HomePanel(TravelApp app) {
@@ -27,48 +26,50 @@ public class HomePanel extends JPanel {
         //setBackground(Color.WHITE); // White background
 
         JLabel title = new JLabel("Welcome to Smart Travel Guide",SwingConstants.CENTER);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 36));
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 50));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton TranspBtn = new JButton("Transportation");
-        TranspBtn.putClientProperty("JButton.buttonType", "roundRect");
-        TranspBtn.putClientProperty("JComponent.roundRect", true);
-        TranspBtn.setMaximumSize(new Dimension(300, 60));
-        TranspBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        JButton TranspBtn = createButton("Transportation","Images/Metro.png");
         TranspBtn.addActionListener(e -> app.showPanel("Transportation"));
 
-        JButton AccBtn = new JButton("Accommodation");
-        AccBtn.putClientProperty("JButton.buttonType", "roundRect");
-        AccBtn.putClientProperty("JComponent.roundRect", true);
-        AccBtn.setMaximumSize(new Dimension(300, 60));
-        AccBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        JButton AccBtn = createButton("Accommodation","Images/Accomodation.png");
         AccBtn.addActionListener(e -> app.showPanel("Accommodation"));
 
-        JButton AttrBtn = new JButton("Attractions");
-        AttrBtn.putClientProperty("JButton.buttonType", "roundRect");
-        AttrBtn.putClientProperty("JComponent.roundRect", true);
-        AttrBtn.setMaximumSize(new Dimension(300, 60));
-        AttrBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        JButton AttrBtn = createButton("Attractions","Images/Attractions.png");
         AttrBtn.addActionListener(e -> app.showPanel("Attractions"));
 
-        JButton MapBtn = new JButton("City Map");
-        MapBtn.putClientProperty("JButton.buttonType", "roundRect");
-        MapBtn.putClientProperty("JComponent.roundRect", true);
-        MapBtn.setMaximumSize(new Dimension(300, 60));
-        MapBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        JButton MapBtn = createButton("City Map","Images/Map.png");
         MapBtn.addActionListener(e -> app.showPanel("City Map"));
 
-        
+        add(Box.createVerticalStrut(50));
         add(title);
         add(Box.createVerticalStrut(40));
         add(TranspBtn);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
         add(AccBtn);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
         add(AttrBtn);
-        add(Box.createVerticalStrut(20));
+        add(Box.createVerticalStrut(40));
         add(MapBtn);
     }
+
+    private JButton createButton(String text,String iconPath)  {
+        JButton button = new JButton(text);
+        button.putClientProperty("JButton.buttonType", "roundRect");
+        button.putClientProperty("JComponent.roundRect", true);
+        button.setMaximumSize(new Dimension(500, 80));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        try {
+            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
+            Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+            button.setIcon(new ImageIcon(scaledImage));
+            
+        } catch (Exception e) {
+            System.err.println("Could not load icon: " + iconPath);
+        }
+        return button;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

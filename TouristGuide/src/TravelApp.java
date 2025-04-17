@@ -14,7 +14,7 @@ public class TravelApp {
     public TravelApp() {
         frame = new JFrame("Tourism App");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900,600);
+        frame.setSize(1200,800);
         frame.setLayout(new BorderLayout());
 
         cardLayout = new CardLayout();
