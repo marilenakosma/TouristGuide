@@ -22,8 +22,10 @@ public class HomePanel extends JPanel {
         e.printStackTrace();  // Handle any IO exceptions
     }
  
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        //setBackground(Color.WHITE); // White background
+        JPanel overlay = new JPanel();
+        overlay.setOpaque(false);
+        overlay.setLayout(new BoxLayout(overlay, BoxLayout.Y_AXIS));
+        overlay.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100));
 
         JLabel title = new JLabel("Welcome to Smart Travel Guide",SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 50));
@@ -33,7 +35,7 @@ public class HomePanel extends JPanel {
         TranspBtn.addActionListener(e -> app.showPanel("Transportation"));
 
         JButton AccBtn = createButton("Accommodation","Images/Accomodation.png");
-        AccBtn.addActionListener(e -> app.showPanel("Accommodation"));
+        AccBtn.addActionListener(e -> app.showPanel("Accomodation"));
 
         JButton AttrBtn = createButton("Attractions","Images/Attractions.png");
         AttrBtn.addActionListener(e -> app.showPanel("Attractions"));
@@ -41,22 +43,26 @@ public class HomePanel extends JPanel {
         JButton MapBtn = createButton("City Map","Images/Map.png");
         MapBtn.addActionListener(e -> app.showPanel("City Map"));
 
-        add(Box.createVerticalStrut(50));
-        add(title);
-        add(Box.createVerticalStrut(40));
-        add(TranspBtn);
-        add(Box.createVerticalStrut(40));
-        add(AccBtn);
-        add(Box.createVerticalStrut(40));
-        add(AttrBtn);
-        add(Box.createVerticalStrut(40));
-        add(MapBtn);
+
+        overlay.add(title);
+        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(TranspBtn);
+        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(AccBtn);
+        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(AttrBtn);
+        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(MapBtn);
+
+        this.setLayout(new GridBagLayout()); // Center it
+        this.add(overlay);
     }
 
     private JButton createButton(String text,String iconPath)  {
         JButton button = new JButton(text);
         button.putClientProperty("JButton.buttonType", "roundRect");
         button.putClientProperty("JComponent.roundRect", true);
+        button.putClientProperty("JButton.hoverBackground", new Color(0, 120, 215));
         button.setMaximumSize(new Dimension(500, 80));
         button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         try {
