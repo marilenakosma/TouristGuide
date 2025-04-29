@@ -6,14 +6,21 @@ import java.net.URL;
 
 public class AccomodationPnl extends JPanel {
 
-    public AccomodationPnl() {
+    public AccomodationPnl(TravelApp app) {
         setLayout(new BorderLayout());
         setBackground(new Color(245, 245, 250)); // soft background color
+        
 
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JButton backBtn = createBackButton(app);
         JLabel title = new JLabel("Available Accommodations", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 36f));
         title.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
-        add(title, BorderLayout.NORTH);
+        
+        topPanel.add(backBtn,BorderLayout.WEST);
+        topPanel.add(title, BorderLayout.CENTER);
+
+        add(topPanel,BorderLayout.NORTH);
 
         JPanel hotelsPanel = new JPanel(new GridLayout(0, 2, 20, 20)); // 2 per row
         hotelsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -30,6 +37,18 @@ public class AccomodationPnl extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // smoother scroll
 
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private JButton createBackButton(TravelApp app) {
+        JButton backBtn = new JButton("Back");
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setBackground(new Color(173,216,230));
+        backBtn.setMaximumSize(new Dimension(50,50));
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
+        backBtn.addActionListener(e-> app.showPanel("Home"));
+        return backBtn;
     }
 
     private JPanel createHotelCard(String name, String imagePath, String description) {

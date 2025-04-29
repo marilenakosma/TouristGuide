@@ -21,12 +21,21 @@ public class AttractionPnl extends JPanel{
         "images/first_school.jpg","images/black_church.jpg",
         "images/white_tower.jpg","images/rope_street.jpg"
     };
-public AttractionPnl() {
+public AttractionPnl(TravelApp app) {
         setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false);
+
+        JButton backBtn = createBackButton(app);
         JLabel title = new JLabel("Explore Local Attractions",SwingConstants.CENTER);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 45));
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 35));
         title.setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
-        add(title,BorderLayout.NORTH);
+        
+        topPanel.add(backBtn,BorderLayout.WEST);
+        topPanel.add(title,BorderLayout.CENTER);
+        
+        add(topPanel,BorderLayout.NORTH);
 
         JPanel grid = new JPanel(new GridLayout(2,3,20,20   ));
         grid.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
@@ -103,6 +112,17 @@ public AttractionPnl() {
             }
         });
         return panel;
+    }
+
+    private JButton createBackButton(TravelApp app) {
+        JButton backBtn = new JButton("Back");
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setBackground(new Color(173,216,230));
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
+        backBtn.addActionListener(e-> app.showPanel("Home"));
+        return backBtn;
     }
 
     private void showAttractionDetails(int index) {

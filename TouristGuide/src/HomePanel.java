@@ -11,7 +11,7 @@ public class HomePanel extends JPanel {
       // Load the background image using ClassLoader
       try {
         // Load the image from the resources folder
-        URL imageURL = getClass().getClassLoader().getResource("Images/back.png");
+        URL imageURL = getClass().getClassLoader().getResource("Images/back1.png");
         
         if (imageURL != null) {
             backgroundImage = ImageIO.read(imageURL); // Read the image
@@ -28,7 +28,7 @@ public class HomePanel extends JPanel {
         overlay.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100));
 
         JLabel title = new JLabel("Welcome to Smart Travel Guide",SwingConstants.CENTER);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 50));
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 40));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton TranspBtn = createButton("Transportation","Images/Metro.png");
@@ -45,13 +45,13 @@ public class HomePanel extends JPanel {
 
 
         overlay.add(title);
-        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(Box.createVerticalStrut(20));
         overlay.add(TranspBtn);
-        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(Box.createVerticalStrut(20));
         overlay.add(AccBtn);
-        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(Box.createVerticalStrut(20));
         overlay.add(AttrBtn);
-        overlay.add(Box.createVerticalStrut(40));
+        overlay.add(Box.createVerticalStrut(20));
         overlay.add(MapBtn);
 
         this.setLayout(new GridBagLayout()); // Center it
@@ -63,7 +63,7 @@ public class HomePanel extends JPanel {
         button.putClientProperty("JButton.buttonType", "roundRect");
         button.putClientProperty("JComponent.roundRect", true);
         button.putClientProperty("JButton.hoverBackground", new Color(0, 120, 215));
-        button.setMaximumSize(new Dimension(500, 80));
+        button.setMaximumSize(new Dimension(400, 80));
         button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
         try {
             ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));

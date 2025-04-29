@@ -14,16 +14,16 @@ public class TravelApp {
     public TravelApp() {
         frame = new JFrame("Tourism App");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1200,800);
+        frame.setSize(900,600);
         frame.setLayout(new BorderLayout());
 
         cardLayout = new CardLayout();
         contentPnl = new JPanel(cardLayout);
 
         contentPnl.add(new HomePanel(this), "Home");
-        contentPnl.add(new TransportationPnl(),"Transportation");
-        contentPnl.add(new AccomodationPnl(),"Accomodation");
-        contentPnl.add(new AttractionPnl(),"Attractions");
+        contentPnl.add(new TransportationPnl(this),"Transportation");
+        contentPnl.add(new AccomodationPnl(this),"Accomodation");
+        contentPnl.add(new AttractionPnl(this),"Attractions");
         contentPnl.add(new MapPnl(),"City Map");
         
         cardLayout.show(contentPnl, "Home");

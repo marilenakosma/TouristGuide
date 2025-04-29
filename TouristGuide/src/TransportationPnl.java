@@ -10,13 +10,19 @@ public class TransportationPnl extends JPanel{
     private JList<String> route;
     private JButton metroBtn,busBtn,taxiBtn;
 
-    public TransportationPnl() {
+    public TransportationPnl(TravelApp app) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
-
+        
+        JButton backBtn = createBackButton(app);
+        JPanel topPanel = new JPanel(new BorderLayout());
         JLabel title = new JLabel("Available Transportation Options",SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 30));
-        add(title,BorderLayout.NORTH);
+
+        topPanel.add(backBtn,BorderLayout.WEST);
+        topPanel.add(title,BorderLayout.CENTER);
+
+        add(topPanel,BorderLayout.NORTH);
 
         JPanel btnPanel = new JPanel(new GridLayout(3,1,5,5));
         btnPanel.setLayout(new BoxLayout(btnPanel,BoxLayout.Y_AXIS));
@@ -70,6 +76,18 @@ public class TransportationPnl extends JPanel{
             }
             return button;
         }
+
+        private JButton createBackButton(TravelApp app) {
+            JButton backBtn = new JButton("Back");
+            backBtn.setFocusPainted(false);
+            backBtn.setBorderPainted(false);
+            backBtn.setBackground(new Color(173,216,230));
+            backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
+            backBtn.addActionListener(e-> app.showPanel("Home"));
+            return backBtn;
+        }
+
          
          private void addActionListeners() {
             metroBtn.addActionListener(e -> showMessage("Metro button clicked!"));
