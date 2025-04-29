@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.net.URL;
@@ -54,17 +56,28 @@ public class HomePanel extends JPanel {
         overlay.add(Box.createVerticalStrut(20));
         overlay.add(MapBtn);
 
-        this.setLayout(new GridBagLayout()); // Center it
+        this.setLayout(new GridBagLayout()); 
         this.add(overlay);
     }
 
     private JButton createButton(String text,String iconPath)  {
         JButton button = new JButton(text);
+
         button.putClientProperty("JButton.buttonType", "roundRect");
+        
         button.putClientProperty("JComponent.roundRect", true);
-        button.putClientProperty("JButton.hoverBackground", new Color(0, 120, 215));
         button.setMaximumSize(new Dimension(400, 80));
         button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        
+        button.addMouseListener(new MouseAdapter() {
+         public void mouseEntered(MouseEvent evt) {
+            button.setBackground(new Color(220, 235, 255));
+         }
+         public void mouseExited(MouseEvent evt) {
+            button.setBackground(Color.WHITE);
+         }
+        });
+        
         try {
             ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
             Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
