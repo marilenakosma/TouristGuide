@@ -1,5 +1,15 @@
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.DefaultWaypoint;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.TileFactoryInfo;
+import org.jxmapviewer.viewer.Waypoint;
+import org.jxmapviewer.viewer.WaypointPainter;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TransportationPnl extends JPanel{
 
@@ -54,13 +64,41 @@ public class TransportationPnl extends JPanel{
         routeScrollPane.setBorder(BorderFactory.createTitledBorder("Available Routes"));
         add(routeScrollPane,BorderLayout.CENTER);
         // Optional: Map image (can be placed in the center or a different section)
-        JPanel mapPanel = new MapPnl();
-        mapPanel.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
-        mapPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-        add(mapPanel,BorderLayout.EAST);
+        JXMapViewer mapViewer = createMapViewer();
+        mapViewer.setPreferredSize(new Dimension(400,300));
+        add(mapViewer,BorderLayout.EAST);
+        
         
         addActionListeners();
     }  
+
+        private JXMapViewer createMapViewer() {
+            TileFactoryInfo info = new TileFactoryInfo(1,17,17,256,true,true,"https://tile.openstreetmap.org",
+                "x", "y", "z") {
+                    public String getTileUrl(int x,int y,int zoom) {
+                     int z = 17 - zoom;
+                     return this.baseURL + "/" + z + "/" + x +"/" + y + ".png";
+                    }
+                };
+
+                DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+                JXMapViewer viewer = new JXMapViewer();
+                viewer.setTileFactory(tileFactory);
+
+                GeoPosition brasov = new GeoPosition(45.658,25.601);
+                viewer.setZoom(5);
+                viewer.setAddressLocation(brasov);
+
+                Set<Waypoint> waypoints = new HashSet<>();
+                waypoints.add(new DefaultWaypoint(brasov));
+                waypoints.add(new DefaultWaypoint(new GeoPosition(45.66,25.59)));
+
+                WaypointPainter<Waypoint> painter = new WaypointPainter<>();
+                painter.setWaypoints(waypoints);
+                viewer.setOverlayPainter(painter);
+
+                return viewer;
+        }
         private JButton createButton(String text,String iconPath)  {
             JButton button = new JButton(text);
             button.putClientProperty("JButton.buttonType", "roundRect");
