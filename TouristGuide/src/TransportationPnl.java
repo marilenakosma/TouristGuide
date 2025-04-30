@@ -1,22 +1,26 @@
 import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
+import javax.swing.event.MouseInputListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TransportationPnl extends JPanel{
 
-    private static final int MAP_WIDTH =400;
-    private static final int MAP_HEIGHT = 300;
+    private static final int MAP_WIDTH =700;
+    private static final int MAP_HEIGHT = 800;
 
-    private JTable schedule;
+    //private JTable schedule;
     private JList<String> route;
     private JButton metroBtn,busBtn,taxiBtn;
 
@@ -51,53 +55,76 @@ public class TransportationPnl extends JPanel{
 
         add(btnPanel,BorderLayout.WEST);
 
-        JPanel routesPanel = new JPanel(new BorderLayout());
 
-        DefaultListModel<String> routeListModel = new DefaultListModel<>();
-        routeListModel.addElement("Route 1: City Center - Airport");
-        routeListModel.addElement("Route 2: City Center - Train Station");
-        routeListModel.addElement("Route 3: City Center - Museum");
-
-        route = new JList<>(routeListModel);
-        route.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        JScrollPane routeScrollPane = new JScrollPane(route);
-        routeScrollPane.setBorder(BorderFactory.createTitledBorder("Available Routes"));
-        add(routeScrollPane,BorderLayout.CENTER);
         // Optional: Map image (can be placed in the center or a different section)
         JXMapViewer mapViewer = createMapViewer();
-        mapViewer.setPreferredSize(new Dimension(400,300));
+        mapViewer.setPreferredSize(new Dimension(MAP_WIDTH,MAP_HEIGHT));
         add(mapViewer,BorderLayout.EAST);
         
         
         addActionListeners();
     }  
 
+    public class TransportWaypoint extends DefaultWaypoint {
+        private final String label;
+
+        public TransportWaypoint(GeoPosition pos,String label) {
+            super(pos);
+            this.label = label;
+        }
+        public String getLabel() {
+            return label;
+        }
+    }
+
         private JXMapViewer createMapViewer() {
-            TileFactoryInfo info = new TileFactoryInfo(1,17,17,256,true,true,"https://tile.openstreetmap.org",
-                "x", "y", "z") {
-                    public String getTileUrl(int x,int y,int zoom) {
-                     int z = 17 - zoom;
-                     return this.baseURL + "/" + z + "/" + x +"/" + y + ".png";
+                JXMapViewer mapViewer = new JXMapViewer();
+                mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
+                mapViewer.setZoom(5);
+                mapViewer.setAddressLocation(new GeoPosition(45.658,25.601));
+                
+                Set<TransportWaypoint> waypoints = new HashSet<>();
+                waypoints.add(new TransportWaypoint(new GeoPosition(45.7, 25.6), "Airport"));
+                waypoints.add(new TransportWaypoint(new GeoPosition(45.66, 25.6), "Train Station"));
+                waypoints.add(new TransportWaypoint(new GeoPosition(45.65, 25.58), "Metro Station"));
+                waypoints.add(new TransportWaypoint(new GeoPosition(45.67, 25.62), "Museum"));
+                
+                WaypointPainter<TransportWaypoint> waypointPainter = new WaypointPainter<TransportWaypoint>() {
+                  protected void doPaint(Graphics2D g, JXMapViewer map, int width, int height) {
+                   for(TransportWaypoint w : getWaypoints()) {
+                    Point2D point = map.getTileFactory().geoToPixel(w.getPosition(),map.getZoom());
+                    Rectangle viewport = map.getViewportBounds();
+                    int x = (int) (point.getX() - viewport.getX());
+                    int y = (int) (point.getY() - viewport.getY());
+
+                    g.setColor(Color.RED);
+                    g.fillOval(x - 5,y-5,10,10);
+                    g.setColor(Color.BLACK);
+                    g.drawString(w.getLabel(),x+6,y);
+                   }
+                 }
+              };
+              waypointPainter.setWaypoints(waypoints);
+
+              mapViewer.setOverlayPainter(new CompoundPainter<>(waypointPainter));
+              
+              mapViewer.addMouseListener(new MouseAdapter() {
+               public void mouseClicked(MouseEvent e) {
+                Point mousePoint = e.getPoint();
+                for (TransportWaypoint w : waypoints) {
+                    Point2D point = mapViewer.getTileFactory().geoToPixel(w.getPosition(),mapViewer.getZoom());
+                    Rectangle viewport = mapViewer.getViewportBounds();
+                    int x = (int) (point.getX() - viewport.getX());
+                    int y = (int) (point.getY() - viewport.getY());
+
+                    if(mousePoint.distance(x,y) < 10) {
+                        JOptionPane.showMessageDialog(mapViewer,w.getLabel(),"Location Info",JOptionPane.INFORMATION_MESSAGE);
+                        break;
                     }
-                };
-
-                DefaultTileFactory tileFactory = new DefaultTileFactory(info);
-                JXMapViewer viewer = new JXMapViewer();
-                viewer.setTileFactory(tileFactory);
-
-                GeoPosition brasov = new GeoPosition(45.658,25.601);
-                viewer.setZoom(5);
-                viewer.setAddressLocation(brasov);
-
-                Set<Waypoint> waypoints = new HashSet<>();
-                waypoints.add(new DefaultWaypoint(brasov));
-                waypoints.add(new DefaultWaypoint(new GeoPosition(45.66,25.59)));
-
-                WaypointPainter<Waypoint> painter = new WaypointPainter<>();
-                painter.setWaypoints(waypoints);
-                viewer.setOverlayPainter(painter);
-
-                return viewer;
+                }
+               }
+              });
+                return mapViewer;
         }
         private JButton createButton(String text,String iconPath)  {
             JButton button = new JButton(text);
