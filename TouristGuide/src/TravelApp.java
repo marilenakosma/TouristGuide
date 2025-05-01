@@ -24,7 +24,7 @@ public class TravelApp {
         contentPnl.add(new TransportationPnl(this),"Transportation");
         contentPnl.add(new AccomodationPnl(this),"Accomodation");
         contentPnl.add(new AttractionPnl(this),"Attractions");
-        contentPnl.add(new MapPnl(),"City Map");
+        //contentPnl.add(new MapPnl(),"City Map");
         
         cardLayout.show(contentPnl, "Home");
 
