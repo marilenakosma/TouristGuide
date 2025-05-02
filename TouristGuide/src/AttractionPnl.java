@@ -1,158 +1,216 @@
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.input.PanMouseInputListener;
+import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.painter.Painter;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-public class AttractionPnl extends JPanel{
-    private final String[] attractionNames = {
-        "Bran Castle","Council Square","First Romanian School",
-        "Black Church","White Tower","Rope Street"
-    };
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.List;
 
-    private final String[] descriptions = {
-        "A historic castle located in Bran, Romania, often referred to as Dracula's Castle.",
-        "The main square of Brașov, surrounded by beautiful architecture and vibrant cafes.",
-        "The first Romanian school, showcasing the history of education in the region.",
-        "A famous Gothic-style monument and one of the most important landmarks in Brașov.",
-        "An iconic watchtower offering panoramic views of the city and surrounding mountains.",
-        "One of the narrowest streets in Europe, known for its charming atmosphere."
-    };
-    private final String[] images = {
-        "images/bran_castle.jpg","images/council_square.jpg",
-        "images/first_school.jpg","images/black_church.jpg",
-        "images/white_tower.jpg","images/rope_street.jpg"
-    };
-public AttractionPnl(TravelApp app) {
+public class AttractionPnl extends JPanel {
+    private JXMapViewer mapViewer;
+    private AttractionPainter painter;
+    private List<Attraction> attractions = new ArrayList<>();
+
+    public AttractionPnl(TravelApp app) {
         setLayout(new BorderLayout());
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setOpaque(false);
-
-        JButton backBtn = createBackButton(app);
-        JLabel title = new JLabel("Explore Local Attractions",SwingConstants.CENTER);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 35));
-        title.setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
-        
-        topPanel.add(backBtn,BorderLayout.WEST);
-        topPanel.add(title,BorderLayout.CENTER);
-        
-        add(topPanel,BorderLayout.NORTH);
-
-        JPanel grid = new JPanel(new GridLayout(2,3,20,20   ));
-        grid.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
-        //grid.setBackground(Color.decode(#f5f5f5));
-
-        for(int i=0;i< 6; i++) {
-            JPanel card = createAttractionCard(i);
-            grid.add(card);
-        }
-
-        add(new JScrollPane(grid),BorderLayout.CENTER);
+        mapViewer = createMapViewer();
+        add(mapViewer, BorderLayout.CENTER);
+        add(createBackButton(app), BorderLayout.SOUTH);
     }
-    private JPanel createAttractionCard(int index) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(new Color(200 + index * 7,200 - index * 5,220 - index * 4));
-        //panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createEmptyBorder(5, 5, 5, 5),
-        BorderFactory.createLineBorder(new Color(220, 220, 220), 1)
-));
-        panel.setPreferredSize(new Dimension(200,200));
-    
-        JLabel name = new JLabel(attractionNames[index],SwingConstants.CENTER);
-        name.setFont(new Font("SansSerif",Font.BOLD,20));
-        name.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        
-        JButton button = new JButton();
-        try {
-        ImageIcon image= new ImageIcon(getClass().getClassLoader().getResource(images[index]));
-        Image scaledImage = image.getImage().getScaledInstance(400, 300, Image.SCALE_SMOOTH);
-        button.setIcon(new ImageIcon(scaledImage));
-        button.setBorderPainted(false);
-        button.setOpaque(true);
-        button.putClientProperty("FlatLaf.styleClass", "rounded");
-        }
-        catch(Exception ex) {
-            System.err.println("Could not load icon: " + images[index]);
-        }
 
-        JPanel overlay = new JPanel();
-        overlay.setLayout(new BorderLayout());
-        overlay.setBackground(new Color(0, 0, 0, 130)); // less harsh
+    private JXMapViewer createMapViewer() {
+        JXMapViewer viewer = new JXMapViewer();
+        viewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
+        viewer.setZoom(5);
+        viewer.setAddressLocation(new GeoPosition(45.658, 25.601));
 
+        attractions.add(createAttraction("Bran Castle", 45.5156, 25.3676, "Historic castle with vampire legends", "9:00-18:00", 10.0, new String[]{"images/bran_castle.jpg"}));
+        attractions.add(createAttraction("Black Church", 45.6419, 25.5882, "Gothic church in the old town", "10:00-17:00", 5.0, new String[]{"images/black_church.jpg"}));
 
-        JLabel description = new JLabel("<html><center>"  +descriptions[index] + "</center></html>", SwingConstants.CENTER);
-        description.setForeground(Color.WHITE);
-        description.setFont(new Font("SansSerif",Font.PLAIN,16));
-        overlay.add(description,BorderLayout.CENTER);
-        overlay.setVisible(false);
-        panel.setLayout(new OverlayLayout(panel));
+        painter = new AttractionPainter(attractions);
+        viewer.setOverlayPainter(painter);
 
-        JPanel content = new JPanel(new BorderLayout());
-        content.setOpaque(false);
-        content.add(button,BorderLayout.CENTER);
-        content.add(name,BorderLayout.SOUTH);
-        
-        panel.add(overlay);
-        panel.add(content);
+        MouseInputListener mia = new PanMouseInputListener(viewer);
+        viewer.addMouseListener(mia);
+        viewer.addMouseMotionListener(mia);
+        viewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(viewer));
 
-        panel.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                overlay.setVisible(true);
-                panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            public void mouseExited(MouseEvent e) {
-                overlay.setVisible(false);
-                panel.setCursor(Cursor.getDefaultCursor());
-            }
-
+        viewer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                showAttractionDetails(index);
+                Point mousePoint = e.getPoint();
+                for (Attraction attr : attractions) {
+                    Point2D geoPoint = viewer.getTileFactory().geoToPixel(attr.position, viewer.getZoom());
+                    Rectangle viewport = viewer.getViewportBounds();
+                    int x = (int) (geoPoint.getX() - viewport.getX());
+                    int y = (int) (geoPoint.getY() - viewport.getY());
+                    if (mousePoint.distance(x, y) < 20) {
+                        showAttractionDetails(attr);
+                        break;
+                    }
+                }
             }
         });
-        return panel;
+
+        return viewer;
+    }
+
+    private Attraction createAttraction(String name, double lat, double lon, String desc, String hours, double price, String[] imagePaths) {
+        List<BufferedImage> imgs = new ArrayList<>();
+        for (String path : imagePaths) {
+            try {
+                URL url = getClass().getClassLoader().getResource(path);
+                if (url != null) imgs.add(ImageIO.read(url));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Attraction(name, new GeoPosition(lat, lon), desc, hours, price, imgs);
+    }
+
+    private void showAttractionDetails(Attraction attr) {
+        JDialog dialog = new JDialog((Frame) null, attr.name, true);
+        dialog.setLayout(new BorderLayout());
+
+        JPanel imagePanel = new SlideshowPanel(attr.images);
+
+        JTextArea info = new JTextArea(attr.description + "\nOpen: " + attr.openingHours + "\nPrice: $" + attr.price);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.setEditable(false);
+        info.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        info.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JButton buyBtn = new JButton("Buy Ticket");
+        buyBtn.addActionListener(e -> JOptionPane.showMessageDialog(dialog, "Ticket bought for " + attr.name));
+
+        JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.add(info, BorderLayout.CENTER);
+        southPanel.add(buyBtn, BorderLayout.SOUTH);
+
+        dialog.add(imagePanel, BorderLayout.CENTER);
+        dialog.add(southPanel, BorderLayout.SOUTH);
+
+        dialog.setSize(500, 400);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
     private JButton createBackButton(TravelApp app) {
-        JButton backBtn = new JButton("Back");
-        backBtn.setFocusPainted(false);
-        backBtn.setBorderPainted(false);
-        backBtn.setBackground(new Color(173,216,230));
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
-        backBtn.addActionListener(e-> app.showPanel("Home"));
-        return backBtn;
+        JButton back = new JButton("Back");
+        back.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        back.addActionListener(e -> app.showPanel("Home"));
+        return back;
     }
 
-    private void showAttractionDetails(int index) {
-        JDialog detailDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Attraction Details", true);
-        detailDialog.setSize(400,300);
-        detailDialog.setLocationRelativeTo(this);
+    static class Attraction {
+        String name;
+        GeoPosition position;
+        String description;
+        String openingHours;
+        double price;
+        List<BufferedImage> images;
 
-        JLabel name = new JLabel(attractionNames[index],SwingConstants.CENTER);
-        name.setFont(name.getFont().deriveFont(Font.PLAIN, 30));
-        name.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-
-        JTextArea details = new JTextArea();
-        details.setText(descriptions[index] +"\n\nOpening Hours:9-18");
-
-        details.setEditable(false);
-        details.setWrapStyleWord(true);
-        details.setLineWrap(true);
-        details.setMargin(new Insets(10,10,10,10));
-        details.setBackground(UIManager.getColor("Panel.background"));
-        
-        JButton mapBtn = new JButton("View on Map");
-        mapBtn.addActionListener(e -> {
-            detailDialog.dispose();
-            //JOptionPane.showMessageDialog(this, "Show attraction " + attractionNames[index] + " on the map.");
-        });
-
-        detailDialog.add(name,BorderLayout.NORTH);
-        detailDialog.add(new JScrollPane(details), BorderLayout.CENTER);
-        detailDialog.add(mapBtn, BorderLayout.SOUTH);
-
-        detailDialog.setVisible(true);
+        public Attraction(String name, GeoPosition pos, String desc, String hours, double price, List<BufferedImage> imgs) {
+            this.name = name;
+            this.position = pos;
+            this.description = desc;
+            this.openingHours = hours;
+            this.price = price;
+            this.images = imgs;
+        }
     }
-}
+
+    static class AttractionPainter implements Painter<JXMapViewer> {
+        private List<Attraction> attractions;
+        private BufferedImage markerIcon;
+
+        public AttractionPainter(List<Attraction> attractions) {
+            this.attractions = attractions;
+            try {
+                URL url = getClass().getClassLoader().getResource("images/marker-icon.png");
+                if (url != null) {
+                    BufferedImage original = ImageIO.read(url);
+                    Image scaled = original.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+                    markerIcon = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g2 = markerIcon.createGraphics();
+                    g2.drawImage(scaled, 0, 0, null);
+                    g2.dispose();
+                } else {
+                    System.err.println("Marker icon not found.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        }
+
+        public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            Rectangle viewport = map.getViewportBounds();
+
+            for (Attraction attr : attractions) {
+                Point2D pt = map.getTileFactory().geoToPixel(attr.position, map.getZoom());
+                int x = (int) (pt.getX() - viewport.getX());
+                int y = (int) (pt.getY() - viewport.getY());
+
+                if (markerIcon != null) {
+                    int iw = markerIcon.getWidth();
+                    int ih = markerIcon.getHeight();
+                    g2.drawImage(markerIcon, x - iw / 2, y - ih / 2, null);
+                } else {
+                    g2.setColor(Color.RED);
+                    g2.fillOval(x - 5, y - 5, 10, 10);
+                }
+
+                g2.setColor(Color.BLACK);
+                g2.drawString(attr.name, x + 10, y);
+            }
+
+            g2.dispose();
+        }
+    }
+
+    static class SlideshowPanel extends JPanel {
+        private JLabel imageLabel = new JLabel();
+        private List<BufferedImage> images;
+        private int currentIndex = 0;
+
+        public SlideshowPanel(List<BufferedImage> images) {
+            this.images = images;
+            setLayout(new BorderLayout());
+            imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            add(imageLabel, BorderLayout.CENTER);
+            if (!images.isEmpty()) {
+                showImage(0);
+                Timer timer = new Timer(3000, e -> nextImage());
+                timer.start();
+            }
+        }
+
+        private void showImage(int index) {
+            BufferedImage img = images.get(index);
+            ImageIcon icon = new ImageIcon(img.getScaledInstance(400, 250, Image.SCALE_SMOOTH));
+            imageLabel.setIcon(icon);
+        }
+
+        private void nextImage() {
+            currentIndex = (currentIndex + 1) % images.size();
+            showImage(currentIndex);
+        }
+    }
+} 

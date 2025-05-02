@@ -102,7 +102,11 @@ public class AccomodationPnl extends JPanel {
         bookBtn.setForeground(Color.WHITE);
         card.add(Box.createVerticalStrut(10));
         card.add(bookBtn);
-
+        
+        bookBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(card, "Booking for " + name + " is not yet implemented.", "Booking", JOptionPane.INFORMATION_MESSAGE);
+        });
+        
         return card;
     }
 }
