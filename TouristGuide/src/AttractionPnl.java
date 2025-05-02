@@ -34,28 +34,32 @@ public class AttractionPnl extends JPanel {
     }
 
     private JXMapViewer createMapViewer() {
-        JXMapViewer viewer = new JXMapViewer();
-        viewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
-        viewer.setZoom(5);
-        viewer.setAddressLocation(new GeoPosition(45.658, 25.601));
+        JXMapViewer mapViewer = new JXMapViewer();
+        mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
+        mapViewer.setZoom(5);
+        mapViewer.setAddressLocation(new GeoPosition(45.658, 25.601));
 
-        attractions.add(createAttraction("Bran Castle", 45.5156, 25.3676, "Historic castle with vampire legends", "9:00-18:00", 10.0, new String[]{"images/bran_castle.jpg"}));
-        attractions.add(createAttraction("Black Church", 45.6419, 25.5882, "Gothic church in the old town", "10:00-17:00", 5.0, new String[]{"images/black_church.jpg"}));
+        attractions.add(createAttraction("Bran Castle", 45.5156, 25.3676, "Historic castle with vampire legends", "9:00-18:00", 10.0, new String[]{"images/bran_castle.jpg"},"images/bran_castle_marker.png"));
+        attractions.add(createAttraction("Black Church", 45.6419, 25.5882, "Gothic church in the old town", "10:00-17:00", 5.0, new String[]{"images/black_church.jpg"},"images/black_church_marker.png"));
+        attractions.add(createAttraction("White Tower", 45.642833, 25.586466, "An iconic watchtower offering panoramic views of the city and surrounding mountains.", "10:00-17:00", 5.0, new String[]{"images/white_tower.jpg"},"images/white_tower_marker.png"));
+        attractions.add(createAttraction("Tampa", 45.6333308, 25.583331, "A mountain, part of the and almost entirely surrounded by the city of Braşov.", "All day", 0.0, new String[]{"images/tampa.jpg"},"images/tampa_marker.png"));
+        attractions.add(createAttraction("First Romanian School", 45.63586 , 25.58117 , "The first Romanian school, showcasing the history of education in the region.", "9.00-17.00", 0.0, new String[]{"images/first_school.jpg"},"images/first_school_marker.png"));
 
         painter = new AttractionPainter(attractions);
-        viewer.setOverlayPainter(painter);
+        mapViewer.setOverlayPainter(painter);
 
-        MouseInputListener mia = new PanMouseInputListener(viewer);
-        viewer.addMouseListener(mia);
-        viewer.addMouseMotionListener(mia);
-        viewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(viewer));
-
-        viewer.addMouseListener(new MouseAdapter() {
+        PanMouseInputListener mia = new PanMouseInputListener(mapViewer);
+        mapViewer.addMouseListener(mia);
+        mapViewer.addMouseMotionListener(mia);
+        mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
+        mapViewer.addMouseListener(new PanMouseInputListener(mapViewer));
+        mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
+        mapViewer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 Point mousePoint = e.getPoint();
                 for (Attraction attr : attractions) {
-                    Point2D geoPoint = viewer.getTileFactory().geoToPixel(attr.position, viewer.getZoom());
-                    Rectangle viewport = viewer.getViewportBounds();
+                    Point2D geoPoint = mapViewer.getTileFactory().geoToPixel(attr.position, mapViewer.getZoom());
+                    Rectangle viewport = mapViewer.getViewportBounds();
                     int x = (int) (geoPoint.getX() - viewport.getX());
                     int y = (int) (geoPoint.getY() - viewport.getY());
                     if (mousePoint.distance(x, y) < 20) {
@@ -66,11 +70,29 @@ public class AttractionPnl extends JPanel {
             }
         });
 
-        return viewer;
+        return mapViewer;
     }
 
-    private Attraction createAttraction(String name, double lat, double lon, String desc, String hours, double price, String[] imagePaths) {
+    private Attraction createAttraction(String name, double lat,
+     double lon, String desc, String hours, double price,
+     String[] imagePaths,String markerPath) {
         List<BufferedImage> imgs = new ArrayList<>();
+        BufferedImage marker = null;
+
+        try {
+            URL markerUrl = getClass().getClassLoader().getResource(markerPath);
+            if(markerUrl != null) {
+                BufferedImage original = ImageIO.read(markerUrl);
+                Image scaled = original.getScaledInstance(32,32,Image.SCALE_SMOOTH);
+                marker = new BufferedImage(32,32,BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2 = marker.createGraphics();
+                g2.drawImage(scaled,0,0,null);
+                g2.dispose();
+            }
+        } catch(IOException e) {
+          e.printStackTrace();
+        }
+
         for (String path : imagePaths) {
             try {
                 URL url = getClass().getClassLoader().getResource(path);
@@ -79,24 +101,46 @@ public class AttractionPnl extends JPanel {
                 e.printStackTrace();
             }
         }
-        return new Attraction(name, new GeoPosition(lat, lon), desc, hours, price, imgs);
+        return new Attraction(name, 
+        new GeoPosition(lat, lon), desc, hours, price, imgs,marker);
     }
 
     private void showAttractionDetails(Attraction attr) {
         JDialog dialog = new JDialog((Frame) null, attr.name, true);
         dialog.setLayout(new BorderLayout());
+        //dialog.setUndecorated(true);
+       // dialog.getRootPane().setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(60,60,60),1),
+       // Border));
 
         JPanel imagePanel = new SlideshowPanel(attr.images);
 
         JTextArea info = new JTextArea(attr.description + "\nOpen: " + attr.openingHours + "\nPrice: $" + attr.price);
+        info.setWrapStyleWord(true);
         info.setLineWrap(true);
         info.setWrapStyleWord(true);
         info.setEditable(false);
-        info.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        info.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         info.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        //info.setBackground(new Color(245,245,245));
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
 
         JButton buyBtn = new JButton("Buy Ticket");
-        buyBtn.addActionListener(e -> JOptionPane.showMessageDialog(dialog, "Ticket bought for " + attr.name));
+        buyBtn.setFont(new Font("Segoe UI",Font.BOLD,14));
+        buyBtn.setBackground(new Color(46,204,113));
+        buyBtn.setForeground(Color.WHITE);
+        buyBtn.setFocusPainted(false);
+        buyBtn.setBorderPainted(false);
+        buyBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        buyBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(
+                    dialog,
+                    "Ticket purchased successfully for " + attr.name,
+                    "Purchase Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            dialog.dispose(); });
 
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(info, BorderLayout.CENTER);
@@ -124,14 +168,17 @@ public class AttractionPnl extends JPanel {
         String openingHours;
         double price;
         List<BufferedImage> images;
+        BufferedImage markerIcon;
 
-        public Attraction(String name, GeoPosition pos, String desc, String hours, double price, List<BufferedImage> imgs) {
+        public Attraction(String name, GeoPosition pos, String desc, String hours,
+         double price, List<BufferedImage> imgs,BufferedImage markerIcon) {
             this.name = name;
             this.position = pos;
             this.description = desc;
             this.openingHours = hours;
             this.price = price;
             this.images = imgs;
+            this.markerIcon = markerIcon;
         }
     }
 
@@ -168,17 +215,20 @@ public class AttractionPnl extends JPanel {
                 int x = (int) (pt.getX() - viewport.getX());
                 int y = (int) (pt.getY() - viewport.getY());
 
-                if (markerIcon != null) {
-                    int iw = markerIcon.getWidth();
-                    int ih = markerIcon.getHeight();
-                    g2.drawImage(markerIcon, x - iw / 2, y - ih / 2, null);
+                BufferedImage icon = attr.markerIcon != null ? attr.markerIcon : markerIcon;
+                if (icon != null) {
+                 int iw = icon.getWidth();
+                 int ih = icon.getHeight();
+                 g2.drawImage(icon, x - iw / 2, y - ih / 2, null);
                 } else {
-                    g2.setColor(Color.RED);
-                    g2.fillOval(x - 5, y - 5, 10, 10);
+                  g2.setColor(Color.RED);
+                  g2.fillOval(x - 5, y - 5, 10, 10);
                 }
 
                 g2.setColor(Color.BLACK);
-                g2.drawString(attr.name, x + 10, y);
+                int textY = y + (icon != null ? icon.getHeight() / 2 + 15 : 20);
+                int textX = x - g2.getFontMetrics().stringWidth(attr.name) / 2;
+                g2.drawString(attr.name,textX,textY);
             }
 
             g2.dispose();

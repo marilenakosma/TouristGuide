@@ -96,10 +96,10 @@ public class AccomodationPnl extends JPanel {
 
         // Book Now button
         JButton bookBtn = new JButton("Book Now");
-        bookBtn.putClientProperty("JButton.buttonType", "roundRect");
+        bookBtn.putClientProperty("JButton.buttonType", "default");
         bookBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        bookBtn.setBackground(new Color(0, 120, 215));
-        bookBtn.setForeground(Color.WHITE);
+        //bookBtn.setBackground(new Color(0, 120, 215));
+        //bookBtn.setForeground(Color.WHITE);
         card.add(Box.createVerticalStrut(10));
         card.add(bookBtn);
         
