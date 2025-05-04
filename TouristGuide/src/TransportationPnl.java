@@ -107,8 +107,18 @@ public class TransportationPnl extends JPanel {
         labeledPoints.put(airport, "Airport");
         labeledPoints.put(train, "Train Station");
         labeledPoints.put(museum, "Museum");
+        
+        Map<GeoPosition,BufferedImage> markerImages = new HashMap<>();
+        try {
+           markerImages.put(airport,loadImage("images/airport.png"));
+           markerImages.put(train,loadImage("images/metro.png"));
+           markerImages.put(museum,loadImage("images/museum.png"));
 
-        painter = new MapOverlayPainter(new ArrayList<>(), labeledPoints);
+        }
+        catch(IOException e) {
+         e.printStackTrace();
+        }
+        painter = new MapOverlayPainter(new ArrayList<>(), labeledPoints,markerImages);
         mapViewer.setOverlayPainter(painter);
         
         PanMouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -148,10 +158,12 @@ public class TransportationPnl extends JPanel {
     static class MapOverlayPainter implements Painter<JXMapViewer> {
         private final List<GeoPosition> routePoints = new ArrayList<>();
         private final Map<GeoPosition, String> labeledPoints;
+        private final Map<GeoPosition,BufferedImage> markerImages;
 
-        public MapOverlayPainter(List<GeoPosition> initialRoute, Map<GeoPosition, String> labeledPoints) {
+        public MapOverlayPainter(List<GeoPosition> initialRoute, Map<GeoPosition, String> labeledPoints,Map<GeoPosition,BufferedImage> markerImages) {
             this.routePoints.addAll(initialRoute);  // Use existing list
             this.labeledPoints = labeledPoints;
+            this.markerImages = markerImages;
         }
         
         public void setRoutePoints(List<GeoPosition> points) {
@@ -181,18 +193,50 @@ public class TransportationPnl extends JPanel {
 
             // Draw markers + labels
             for (Entry<GeoPosition, String> entry : labeledPoints.entrySet()) {
+                GeoPosition position = entry.getKey();
+                String label = entry.getValue();
                 Point2D pt = map.getTileFactory().geoToPixel(entry.getKey(), map.getZoom());
                 int x = (int) (pt.getX() - viewport.getX());
                 int y = (int) (pt.getY() - viewport.getY());
-
-                g2.setColor(Color.RED);
-                g2.fillOval(x - 5, y - 5, 10, 10);
+                
+                BufferedImage markerImage = markerImages.get(position);
+                if(markerImage != null) {
+                    int iw = markerImage.getWidth();
+                    int ih = markerImage.getHeight();
+                    g2.drawImage(markerImage, x - iw / 2, y - ih / 2, null);
+                }
+                else {
+                    g2.setColor(Color.RED);
+                    g2.fillOval(x - 5, y - 5, 10, 10);
+                    
+                }
+                Font labelFont = new Font("Segoe UI",Font.BOLD,14);
+                g2.setFont(labelFont);
                 g2.setColor(Color.BLACK);
-                g2.drawString(entry.getValue(), x + 8, y);
+                
+                int textY = y + (markerImage != null ? markerImage.getHeight() / 2 + 15 : 20);
+                int textX = x - g2.getFontMetrics().stringWidth(label) / 2;
+                g2.drawString(label,textX,textY);
             }
 
             g2.dispose();
         }
+    }
+     
+    private BufferedImage loadImage(String path) throws IOException {
+        URL url = getClass().getClassLoader().getResource(path);
+        if(url == null) {
+            throw new IOException("Image not found:" +path);
+        }
+
+        BufferedImage original = ImageIO.read(url);
+        Image scaled = original.getScaledInstance(32,32,Image.SCALE_SMOOTH);
+        BufferedImage markerImage = new BufferedImage(32,32,BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = markerImage.createGraphics();
+        g2.drawImage(scaled,0,0,null);
+        g2.dispose();
+        return markerImage;
+
     }
 
     // Button creator

@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.List;
 
 public class AttractionPnl extends JPanel {
-    
+
     private static final int MAP_WIDTH = 700;
     private static final int MAP_HEIGHT = 800;
     private JXMapViewer mapViewer;
@@ -49,13 +49,13 @@ public class AttractionPnl extends JPanel {
         JXMapViewer mapViewer = new JXMapViewer();
         mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
         mapViewer.setZoom(5);
-        mapViewer.setAddressLocation(new GeoPosition(45.658, 25.601));
+        mapViewer.setAddressLocation(new GeoPosition(45.642, 25.58));
 
-        attractions.add(createAttraction("Bran Castle", 45.5156, 25.3676, "Historic castle with vampire legends", "9:00-18:00", 10.0, new String[]{"images/bran_castle.jpg"},"images/bran_castle_marker.png"));
-        attractions.add(createAttraction("Black Church", 45.6419, 25.5882, "Gothic church in the old town", "10:00-17:00", 5.0, new String[]{"images/black_church.jpg"},"images/black_church_marker.png"));
-        attractions.add(createAttraction("White Tower", 45.642833, 25.586466, "An iconic watchtower offering panoramic views of the city and surrounding mountains.", "10:00-17:00", 5.0, new String[]{"images/white_tower.jpg"},"images/white_tower_marker.png"));
-        attractions.add(createAttraction("Tampa", 45.6333308, 25.583331, "A mountain, part of the and almost entirely surrounded by the city of Braşov.", "All day", 0.0, new String[]{"images/tampa.jpg"},"images/tampa_marker.png"));
-        attractions.add(createAttraction("First Romanian School", 45.63586 , 25.58117 , "The first Romanian school, showcasing the history of education in the region.", "9.00-17.00", 0.0, new String[]{"images/first_school.jpg"},"images/first_school_marker.png"));
+        attractions.add(createAttraction("Bran Castle", 45.5156, 25.3676, "Historic castle with vampire legends", "9:00-18:00", 10.0, new String[]{"images/bran_1.jpg","images/bran_2.jpg","images/bran_3.jpeg"},"images/bran_castle_marker.png"));
+        attractions.add(createAttraction("Black Church", 45.6419, 25.5882, "Gothic church in the old town", "10:00-17:00", 5.0, new String[]{"images/church_1.jpg","images/church_2.jpg","images/church_3.jpg"},"images/black_church_marker.png"));
+        attractions.add(createAttraction("White Tower", 45.642833, 25.586466, "An iconic watchtower offering panoramic views of the city and surrounding mountains.", "10:00-17:00", 5.0, new String[]{"images/tower_1.jpg","images/tower_2.jpg","images/tower_3.jpg"},"images/white_tower_marker.png"));
+        attractions.add(createAttraction("Tampa", 45.6333308, 25.583331, "A mountain, part of the and almost entirely surrounded by the city of Braşov.", "All day", 0.0, new String[]{"images/tampa_1.jpg","images/tampa_2.jpg","images/tampa_3.jpg"},"images/tampa_marker.png"));
+        attractions.add(createAttraction("First Romanian School", 45.63586 , 25.58117 , "The first Romanian school, showcasing the history of education in the region.", "9.00-17.00", 0.0, new String[]{"images/first_1.jpg","images/first_2.jpg","images/first_3.jpg"},"images/first_school_marker.png"));
 
         painter = new AttractionPainter(attractions);
         mapViewer.setOverlayPainter(painter);
@@ -241,7 +241,10 @@ public class AttractionPnl extends JPanel {
                   g2.fillOval(x - 5, y - 5, 10, 10);
                 }
 
+                Font labelFont = new Font("Segoe UI", Font.BOLD, 14); // Customize font type, style, and size
+                g2.setFont(labelFont);
                 g2.setColor(Color.BLACK);
+
                 int textY = y + (icon != null ? icon.getHeight() / 2 + 15 : 20);
                 int textX = x - g2.getFontMetrics().stringWidth(attr.name) / 2;
                 g2.drawString(attr.name,textX,textY);
