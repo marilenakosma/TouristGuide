@@ -1,0 +1,16 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/flatlaf-3.2.jar",
+        "lib/flatlaf-extras-3.6.jar",
+        "TouristGuide/lib/commons-logging-1.3.5.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-adapters.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-api.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-javadoc.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-sources.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-tests.jar",
+        "TouristGuide/lib/commons-logging-1.3.5-test-sources.jar",
+        "TouristGuide/lib/flatlaf-3.2.jar",
+        "TouristGuide/lib/flatlaf-extras-3.6.jar",
+        "TouristGuide/lib/jxmapviewer2-2.8.jar"
+    ]
+}

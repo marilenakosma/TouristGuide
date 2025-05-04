@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import com.formdev.flatlaf.FlatLightLaf;
 
 
 public class TravelApp {
@@ -43,7 +44,7 @@ public class TravelApp {
         }
          try {
             // Use class loader to find the font resource
-            URL fontURL = TravelApp.class.getClassLoader().getResource("fonts/Roboto-Regular.ttf");
+            URL fontURL = TravelApp.class.getClassLoader().getResource("fonts/Montserrat-Light.ttf");
 
             if (fontURL != null) {
                 // Create the font using the input stream
@@ -56,7 +57,7 @@ public class TravelApp {
                 UIManager.put("Label.font", customFont);
                 UIManager.put("TextField.font", customFont);
                 UIManager.put("TextArea.font", customFont);
-                UIManager.put("defaultFont", new Font("Inter", Font.PLAIN, 14)); // or any nice sans-serif
+                UIManager.put("TitlePane.font", new Font("Segoe UI", Font.PLAIN, 14)); // or any nice sans-serif
                 UIManager.put("Button.arc", 20);       // Rounder buttons
                 UIManager.put("Component.arc", 10);    // Rounder scroll panes, fields
                 UIManager.put("TextComponent.arc", 10);

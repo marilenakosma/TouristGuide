@@ -21,16 +21,28 @@ import java.util.*;
 import java.util.List;
 
 public class AttractionPnl extends JPanel {
+    
+    private static final int MAP_WIDTH = 700;
+    private static final int MAP_HEIGHT = 800;
     private JXMapViewer mapViewer;
     private AttractionPainter painter;
     private List<Attraction> attractions = new ArrayList<>();
 
     public AttractionPnl(TravelApp app) {
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JButton backBtn = createBackButton(app);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JLabel title = new JLabel("Popular Attraction Destinations", SwingConstants.CENTER);
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 30));
+        topPanel.add(backBtn, BorderLayout.WEST);
+        topPanel.add(title, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
 
         mapViewer = createMapViewer();
+        mapViewer.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
         add(mapViewer, BorderLayout.CENTER);
-        add(createBackButton(app), BorderLayout.SOUTH);
     }
 
     private JXMapViewer createMapViewer() {
@@ -155,10 +167,14 @@ public class AttractionPnl extends JPanel {
     }
 
     private JButton createBackButton(TravelApp app) {
-        JButton back = new JButton("Back");
-        back.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        back.addActionListener(e -> app.showPanel("Home"));
-        return back;
+        JButton backBtn = new JButton("Back");
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setBackground(new Color(173, 216, 230));
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
+        backBtn.addActionListener(e -> app.showPanel("Home"));
+        return backBtn;
     }
 
     static class Attraction {

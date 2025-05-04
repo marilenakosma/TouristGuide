@@ -6,15 +6,19 @@ import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
 import javax.swing.event.MouseInputListener;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
+
 
 public class TransportationPnl extends JPanel {
 
@@ -24,7 +28,7 @@ public class TransportationPnl extends JPanel {
     private MapOverlayPainter painter;
     private Map<GeoPosition, String> labeledPoints;
 
-
+    private TransportationControls controlsPnl;
     private JButton AirportBtn,MuseumBtn;
 
     public TransportationPnl(TravelApp app) {
@@ -39,14 +43,18 @@ public class TransportationPnl extends JPanel {
         topPanel.add(backBtn, BorderLayout.WEST);
         topPanel.add(title, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
+        
+        controlsPnl = new TransportationControls();
+        controlsPnl.getSearchButton().addActionListener(e -> handleSearch());
+        add(controlsPnl,BorderLayout.WEST);
 
         // Side Buttons
         JPanel btnPanel = new JPanel();
         btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER,20,10));
         btnPanel.setOpaque(false);
 
-        AirportBtn = createButton("Train Station to Airport", "Images/Bus.png");
-        MuseumBtn = createButton("Train Station to Museum", "Images/Taxi.png");
+        AirportBtn = createButton("Images/Metro.png","to","Images/airport.png");
+        MuseumBtn = createButton("Images/Metro.png","to","Images/museum.png");
 
         btnPanel.add(AirportBtn);
         btnPanel.add(MuseumBtn);
@@ -54,11 +62,33 @@ public class TransportationPnl extends JPanel {
         topPanel.add(btnPanel, BorderLayout.SOUTH);
 
         // Map
-        JXMapViewer mapViewer = createMapViewer();
+        mapViewer = createMapViewer();
         mapViewer.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
         add(mapViewer, BorderLayout.CENTER);
 
         addActionListeners();
+    }
+
+    private void handleSearch() {
+        String from = (String) controlsPnl.getFromComboBox().getSelectedItem();
+        String to = (String) controlsPnl.getToComboBox().getSelectedItem();
+        String mode = controlsPnl.getSelectedMode();
+
+        if (from == null || to == null || mode.isEmpty()) {
+            JOptionPane.showMessageDialog(this,"Please select all options!","Error",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+         List<GeoPosition> route = new ArrayList<>();
+        if (from.equals("Brasov") && to.equals("Bucharest")) {
+            route.add(new GeoPosition(45.658, 25.601)); // Brasov
+            route.add(new GeoPosition(44.4268, 26.1025)); // Bucharest
+        }
+        // Add more routes as needed...
+
+        updateRoute(route);
+
+        JOptionPane.showMessageDialog(this, "Trip planned from " + from + " to " + to + " by " + mode + "!", "Trip Planned", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private JXMapViewer createMapViewer() {
@@ -166,17 +196,60 @@ public class TransportationPnl extends JPanel {
     }
 
     // Button creator
-    private JButton createButton(String text, String iconPath) {
+    private JButton createButton(String iconPath_to,String text,String iconPath_from) {
         JButton button = new JButton(text);
         button.putClientProperty("JButton.buttonType", "roundRect");
         button.setMaximumSize(new Dimension(200, 60));
 
         try {
-            ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
-            Image scaledImage = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            button.setIcon(new ImageIcon(scaledImage));
+
+            URL to = getClass().getClassLoader().getResource(iconPath_to);
+            URL from = getClass().getClassLoader().getResource(iconPath_from);
+
+            if(to == null || from == null ) {
+                throw new IOException("Icon not found: " +iconPath_to + "or" +iconPath_from);
+            }
+
+            BufferedImage imgTo = ImageIO.read(to);
+            BufferedImage imgFrom = ImageIO.read(from);
+            
+            int iconWidth = 40;
+            int iconHeight = 40;
+
+            Image scaledTo = imgTo.getScaledInstance(iconWidth,iconHeight,Image.SCALE_SMOOTH);
+            Image scaledFrom = imgFrom.getScaledInstance(iconWidth,iconHeight,Image.SCALE_SMOOTH);
+            
+            Font font = new Font("SansSerif",Font.PLAIN,14);
+            FontMetrics fm = button.getFontMetrics(font);
+            int textWidth = fm.stringWidth(text);
+            int textHeight = fm.getHeight();
+
+            int width = iconWidth + 8 + textWidth + 8 + iconWidth;
+            int height = Math.max(iconHeight,textHeight);
+           //Using g2 instead of g (parent) because it can handle anti-aliasing 
+            BufferedImage combinedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = combinedImage.createGraphics();
+
+            g2.setFont(font);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // Draw first icon
+            g2.drawImage(scaledTo, 0, (height - iconHeight) / 2, null);
+        // Draw text
+            int textX = iconWidth + 8;
+            int textY = (height + fm.getAscent() - fm.getDescent()) / 2;
+            g2.setColor(Color.BLACK);
+            g2.drawString(text, textX, textY);
+        // Draw second icon
+            g2.drawImage(scaledFrom, textX + textWidth + 8, (height - iconHeight) / 2, null);
+
+            g2.dispose();
+
+        
+            button.setIcon(new ImageIcon(combinedImage));
+            button.setText("");
         } catch (Exception e) {
-            System.err.println("Could not load icon: " + iconPath);
+            System.err.println("Could not load icons: " + iconPath_to + " or " + iconPath_from);
         }
         return button;
     }
