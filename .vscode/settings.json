@@ -12,5 +12,6 @@
         "TouristGuide/lib/flatlaf-3.2.jar",
         "TouristGuide/lib/flatlaf-extras-3.6.jar",
         "TouristGuide/lib/jxmapviewer2-2.8.jar"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }

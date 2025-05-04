@@ -44,22 +44,28 @@ public class TransportationPnl extends JPanel {
         topPanel.add(title, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
         
-        controlsPnl = new TransportationControls();
-        controlsPnl.getSearchButton().addActionListener(e -> handleSearch());
-        add(controlsPnl,BorderLayout.WEST);
 
-        // Side Buttons
-        JPanel btnPanel = new JPanel();
-        btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER,20,10));
-        btnPanel.setOpaque(false);
+        JPanel btnRowPanel = new JPanel();
+        btnRowPanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,0));
+        btnRowPanel.setOpaque(false);
 
         AirportBtn = createButton("Images/Metro.png","to","Images/airport.png");
         MuseumBtn = createButton("Images/Metro.png","to","Images/museum.png");
 
-        btnPanel.add(AirportBtn);
-        btnPanel.add(MuseumBtn);
+        btnRowPanel.add(AirportBtn);
+        btnRowPanel.add(MuseumBtn);
 
-        topPanel.add(btnPanel, BorderLayout.SOUTH);
+        JPanel btnPanel = new JPanel();
+        btnPanel.setLayout(new BoxLayout(btnPanel,BoxLayout.Y_AXIS));
+        btnPanel.setOpaque(false);
+
+        btnPanel.add(btnRowPanel);
+
+        controlsPnl = new TransportationControls();
+        controlsPnl.getSearchButton().addActionListener(e -> handleSearch());
+        btnPanel.add(controlsPnl);
+
+        add(btnPanel, BorderLayout.WEST);
 
         // Map
         mapViewer = createMapViewer();
@@ -84,12 +90,12 @@ public class TransportationPnl extends JPanel {
             route.add(new GeoPosition(45.658, 25.601)); // Brasov
             route.add(new GeoPosition(44.4268, 26.1025)); // Bucharest
         }
-        // Add more routes as needed...
 
         updateRoute(route);
 
         JOptionPane.showMessageDialog(this, "Trip planned from " + from + " to " + to + " by " + mode + "!", "Trip Planned", JOptionPane.INFORMATION_MESSAGE);
     }
+
 
     private JXMapViewer createMapViewer() {
          mapViewer = new JXMapViewer();
@@ -213,7 +219,7 @@ public class TransportationPnl extends JPanel {
                 Font labelFont = new Font("Segoe UI",Font.BOLD,14);
                 g2.setFont(labelFont);
                 g2.setColor(Color.BLACK);
-                
+
                 int textY = y + (markerImage != null ? markerImage.getHeight() / 2 + 15 : 20);
                 int textX = x - g2.getFontMetrics().stringWidth(label) / 2;
                 g2.drawString(label,textX,textY);
