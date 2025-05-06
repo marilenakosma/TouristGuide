@@ -11,7 +11,12 @@
         "TouristGuide/lib/commons-logging-1.3.5-test-sources.jar",
         "TouristGuide/lib/flatlaf-3.2.jar",
         "TouristGuide/lib/flatlaf-extras-3.6.jar",
-        "TouristGuide/lib/jxmapviewer2-2.8.jar"
+        "TouristGuide/lib/jxmapviewer2-2.8.jar",
+        "TouristGuide/lib/jcalendar-1.4.jar",
+        "TouristGuide/lib/jgoodies-common-1.2.0.jar",
+        "TouristGuide/lib/jgoodies-looks-2.4.1.jar",
+        "TouristGuide/lib/junit-4.6.jar",
+        "TouristGuide/lib/jdatepicker-1.3.4.jar"
     ],
     "java.debug.settings.onBuildFailureProceed": true
 }

@@ -40,6 +40,17 @@ public class AttractionPnl extends JPanel {
         topPanel.add(title, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
 
+        JPanel wrapperPanel = new JPanel();
+        wrapperPanel.setLayout(new BorderLayout());
+        wrapperPanel.add(topPanel, BorderLayout.NORTH);
+        
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(0, 20)); // Height: 20px
+        spacer.setOpaque(false);
+        wrapperPanel.add(spacer, BorderLayout.SOUTH);
+
+        add(wrapperPanel, BorderLayout.NORTH);
+
         mapViewer = createMapViewer();
         mapViewer.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
         add(mapViewer, BorderLayout.CENTER);

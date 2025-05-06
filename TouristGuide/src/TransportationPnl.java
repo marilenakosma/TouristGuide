@@ -21,7 +21,8 @@ import java.util.Map.Entry;
 
 
 public class TransportationPnl extends JPanel {
-
+    
+    private final Map<String,List<GeoPosition>> routes = new HashMap<>();
     private static final int MAP_WIDTH = 700;
     private static final int MAP_HEIGHT = 800;
     private JXMapViewer mapViewer;
@@ -34,7 +35,8 @@ public class TransportationPnl extends JPanel {
     public TransportationPnl(TravelApp app) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+        
+        initializeRoutes();
         // Title + Back
         JButton backBtn = createBackButton(app);
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -43,7 +45,17 @@ public class TransportationPnl extends JPanel {
         topPanel.add(backBtn, BorderLayout.WEST);
         topPanel.add(title, BorderLayout.CENTER);
         add(topPanel, BorderLayout.NORTH);
+
+        JPanel wrapperPanel = new JPanel();
+        wrapperPanel.setLayout(new BorderLayout());
+        wrapperPanel.add(topPanel, BorderLayout.NORTH);
         
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(0, 20)); // Height: 20px
+        spacer.setOpaque(false);
+        wrapperPanel.add(spacer, BorderLayout.SOUTH);
+
+        add(wrapperPanel, BorderLayout.NORTH);
 
         JPanel btnRowPanel = new JPanel();
         btnRowPanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,0));
@@ -74,7 +86,57 @@ public class TransportationPnl extends JPanel {
 
         addActionListeners();
     }
-
+    
+    private void initializeRoutes() {
+        routes.put("Brasov-Bucharest" , Arrays.asList (
+            new GeoPosition(45.658,25.601),
+            new GeoPosition(44.4268,26.1025)
+        ));
+        routes.put("Bucharest-Brasov" , Arrays.asList (
+            new GeoPosition(44.4268,26.1025),
+            new GeoPosition(45.658,25.601)
+        ));
+        routes.put("Brasov-Cluj" , Arrays.asList (
+            new GeoPosition(45.658,25.601),
+            new GeoPosition(46.7712,23.6236)
+        ));
+        routes.put("Cluj-Brasov" , Arrays.asList (
+            new GeoPosition(46.7712,23.6236),
+            new GeoPosition(45.658,25.601)
+        ));
+        routes.put("Bucharest-Cluj",Arrays.asList(
+            new GeoPosition(44.4268,26.1025),
+            new GeoPosition(46.7712,23.6236)
+        ));
+        routes.put("Cluj-Bucharest",Arrays.asList(
+            new GeoPosition(46.7712,23.6236),
+            new GeoPosition(44.4268,26.1025)
+        ));
+        routes.put("Sibiu-Brasov",Arrays.asList(
+            new GeoPosition(45.7983,24.1256),
+            new GeoPosition(45.658,25.601)
+        ));
+        routes.put("Brasov-Sibiu",Arrays.asList(
+            new GeoPosition(45.658,25.601),
+            new GeoPosition(45.7983,24.1256)
+        ));
+        routes.put("Bucharest-Sibiu",Arrays.asList(
+            new GeoPosition(44.4268,26.1025),
+            new GeoPosition(45.7983,24.1256)
+        ));
+        routes.put("Sibiu-Bucharest",Arrays.asList(
+            new GeoPosition(45.7983,24.1256),
+            new GeoPosition(44.4268,26.1025)
+        ));
+        routes.put("Sibiu-Cluj",Arrays.asList(
+            new GeoPosition(45.7983,24.1256),
+            new GeoPosition(46.7712,23.6236)
+        ));
+        routes.put("Cluj-Sibiu",Arrays.asList(
+            new GeoPosition(46.7712,23.6236),
+            new GeoPosition(45.7983,24.1256)
+        ));
+    }
     private void handleSearch() {
         String from = (String) controlsPnl.getFromComboBox().getSelectedItem();
         String to = (String) controlsPnl.getToComboBox().getSelectedItem();
@@ -85,11 +147,15 @@ public class TransportationPnl extends JPanel {
             return;
         }
         
-         List<GeoPosition> route = new ArrayList<>();
-        if (from.equals("Brasov") && to.equals("Bucharest")) {
-            route.add(new GeoPosition(45.658, 25.601)); // Brasov
-            route.add(new GeoPosition(44.4268, 26.1025)); // Bucharest
+        from = from.trim().toLowerCase();
+        to = to.trim().toLowerCase();
+
+        if(from.equals(to)) {
+            JOptionPane.showMessageDialog(this,"Start and destination location cannot be the same!","Error",JOptionPane.ERROR_MESSAGE);
+            return;
         }
+       String routeKey = from + "-" + to;
+       List<GeoPosition> route = routes.get(routeKey);
 
         updateRoute(route);
 

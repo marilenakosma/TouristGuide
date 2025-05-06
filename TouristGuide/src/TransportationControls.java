@@ -48,6 +48,8 @@ public TransportationControls() {
     add(transportationModePnl,gbc);
 
     searchBtn = new JButton("Plan Trip");
+    searchBtn.setBackground(new Color(0, 120, 215));
+    searchBtn.setForeground(Color.WHITE);
     gbc.gridy = 3;
     add(searchBtn,gbc);
 }

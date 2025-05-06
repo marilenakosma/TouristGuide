@@ -12,15 +12,26 @@ public class AccomodationPnl extends JPanel {
         
 
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding around the panel
+        
+        // Back Button Panel
+        JPanel backBtnPanel = new JPanel();
+        backBtnPanel.setLayout(new BoxLayout(backBtnPanel, BoxLayout.Y_AXIS)); // Align vertically
+        backBtnPanel.setOpaque(false); // Match the background of the top panel
         JButton backBtn = createBackButton(app);
+        backBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the button vertically
+        backBtnPanel.add(backBtn);
+        
+        // Title Label
         JLabel title = new JLabel("Available Accommodations", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 36f));
-        title.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
+        title.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10)); // Adjust padding for better alignment
         
-        topPanel.add(backBtn,BorderLayout.WEST);
-        topPanel.add(title, BorderLayout.CENTER);
-
-        add(topPanel,BorderLayout.NORTH);
+        // Add components to the top panel
+        topPanel.add(backBtnPanel, BorderLayout.WEST); // Add the back button to the left
+        topPanel.add(title, BorderLayout.CENTER); // Add the title to the center
+        
+        add(topPanel, BorderLayout.NORTH); // Add the top panel to the main layout
 
         JPanel hotelsPanel = new JPanel(new GridLayout(0, 2, 20, 20)); // 2 per row
         hotelsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
@@ -48,6 +59,9 @@ public class AccomodationPnl extends JPanel {
         backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
         backBtn.addActionListener(e-> app.showPanel("Home"));
+
+        Dimension buttonSize = new Dimension(100, 50); 
+        backBtn.setMaximumSize(buttonSize);
         return backBtn;
     }
 
@@ -98,13 +112,14 @@ public class AccomodationPnl extends JPanel {
         JButton bookBtn = new JButton("Book Now");
         bookBtn.putClientProperty("JButton.buttonType", "default");
         bookBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //bookBtn.setBackground(new Color(0, 120, 215));
-        //bookBtn.setForeground(Color.WHITE);
+        bookBtn.setBackground(new Color(0, 120, 215));
+        bookBtn.setForeground(Color.WHITE);
         card.add(Box.createVerticalStrut(10));
         card.add(bookBtn);
         
         bookBtn.addActionListener(e -> {
-            JOptionPane.showMessageDialog(card, "Booking for " + name + " is not yet implemented.", "Booking", JOptionPane.INFORMATION_MESSAGE);
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(card);
+            new BookingDialog(parentFrame, name).setVisible(true);
         });
         
         return card;
