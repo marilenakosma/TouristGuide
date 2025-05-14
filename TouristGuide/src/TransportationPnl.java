@@ -5,7 +5,6 @@ import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
-import javax.swing.event.MouseInputListener;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +17,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
-
 
 public class TransportationPnl extends JPanel {
     
@@ -51,7 +49,7 @@ public class TransportationPnl extends JPanel {
         wrapperPanel.add(topPanel, BorderLayout.NORTH);
         
         JPanel spacer = new JPanel();
-        spacer.setPreferredSize(new Dimension(0, 20)); // Height: 20px
+        spacer.setPreferredSize(new Dimension(0, 20)); 
         spacer.setOpaque(false);
         wrapperPanel.add(spacer, BorderLayout.SOUTH);
 
@@ -79,12 +77,12 @@ public class TransportationPnl extends JPanel {
 
         add(btnPanel, BorderLayout.WEST);
 
-        // Map
         mapViewer = createMapViewer();
         mapViewer.setPreferredSize(new Dimension(MAP_WIDTH, MAP_HEIGHT));
         add(mapViewer, BorderLayout.CENTER);
 
         addActionListeners();
+
     }
     
     private void initializeRoutes() {
@@ -147,8 +145,8 @@ public class TransportationPnl extends JPanel {
             return;
         }
         
-        from = from.trim().toLowerCase();
-        to = to.trim().toLowerCase();
+        //from = from.trim().toLowerCase();
+       // to = to.trim().toLowerCase();
 
         if(from.equals(to)) {
             JOptionPane.showMessageDialog(this,"Start and destination location cannot be the same!","Error",JOptionPane.ERROR_MESSAGE);
@@ -199,9 +197,7 @@ public class TransportationPnl extends JPanel {
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
         mapViewer.addMouseListener(new PanMouseInputListener(mapViewer));
         mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
-
         
-        // Click handler
         mapViewer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 Point mousePoint = e.getPoint();
@@ -226,14 +222,13 @@ public class TransportationPnl extends JPanel {
         mapViewer.repaint();
     }    
 
-    // Painter class: routes and labeled markers
     static class MapOverlayPainter implements Painter<JXMapViewer> {
         private final List<GeoPosition> routePoints = new ArrayList<>();
         private final Map<GeoPosition, String> labeledPoints;
         private final Map<GeoPosition,BufferedImage> markerImages;
 
         public MapOverlayPainter(List<GeoPosition> initialRoute, Map<GeoPosition, String> labeledPoints,Map<GeoPosition,BufferedImage> markerImages) {
-            this.routePoints.addAll(initialRoute);  // Use existing list
+            this.routePoints.addAll(initialRoute);  
             this.labeledPoints = labeledPoints;
             this.markerImages = markerImages;
         }
@@ -263,7 +258,6 @@ public class TransportationPnl extends JPanel {
                 prev = new Point(x, y);
             }
 
-            // Draw markers + labels
             for (Entry<GeoPosition, String> entry : labeledPoints.entrySet()) {
                 GeoPosition position = entry.getKey();
                 String label = entry.getValue();
@@ -349,19 +343,18 @@ public class TransportationPnl extends JPanel {
             g2.setFont(font);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // Draw first icon
+
             g2.drawImage(scaledTo, 0, (height - iconHeight) / 2, null);
-        // Draw text
+
             int textX = iconWidth + 8;
             int textY = (height + fm.getAscent() - fm.getDescent()) / 2;
             g2.setColor(Color.BLACK);
             g2.drawString(text, textX, textY);
-        // Draw second icon
+  
             g2.drawImage(scaledFrom, textX + textWidth + 8, (height - iconHeight) / 2, null);
 
             g2.dispose();
 
-        
             button.setIcon(new ImageIcon(combinedImage));
             button.setText("");
         } catch (Exception e) {
@@ -399,10 +392,6 @@ public class TransportationPnl extends JPanel {
         });
     }
     
-
-    private void showMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
-    }
 }
 
         

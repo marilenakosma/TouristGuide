@@ -1,64 +1,67 @@
-
-/*import javax.swing.*;
+import javax.swing.*;
 import java.awt.*;
-
-    import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.input.PanMouseInputListener;
+import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.painter.Painter;
-
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map.Entry;
-import java.awt.geom.Rectangle2D;
 
-public class MapPnl extends JPanel{
+public class MapPnl extends JPanel {
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Custom Map Painter Example");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.getContentPane().add(new MapPnl().createMapViewer());
-            frame.setSize(800, 600);
-            frame.setVisible(true);
-        });
+    public MapPnl(TravelApp app) {
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+
+        JButton backBtn = createBackButton(app);
+        topPanel.add(backBtn, BorderLayout.WEST);
+    
+       add(topPanel, BorderLayout.NORTH);
+
+        JXMapViewer mapViewer = createMapViewer();
+        add(mapViewer, BorderLayout.CENTER);
     }
 
     public JXMapViewer createMapViewer() {
         JXMapViewer mapViewer = new JXMapViewer();
         mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
         mapViewer.setZoom(5);
-        mapViewer.setAddressLocation(new GeoPosition(45.658, 25.601));
+        mapViewer.setAddressLocation(new GeoPosition(45.658, 25.601)); 
 
-        // Define labeled positions
         Map<GeoPosition, String> labeledPoints = new HashMap<>();
         GeoPosition airport = new GeoPosition(45.7, 25.6);
         GeoPosition train = new GeoPosition(45.66, 25.6);
-        GeoPosition metro = new GeoPosition(45.65, 25.58);
         GeoPosition museum = new GeoPosition(45.67, 25.62);
 
         labeledPoints.put(airport, "Airport");
         labeledPoints.put(train, "Train Station");
-        labeledPoints.put(metro, "Metro Station");
         labeledPoints.put(museum, "Museum");
 
-        // Define route path (line)
         List<GeoPosition> routePoints = Arrays.asList(
             airport, train, museum
         );
 
         mapViewer.setOverlayPainter(new MapOverlayPainter(routePoints, labeledPoints));
+        
+        PanMouseInputListener mia = new PanMouseInputListener(mapViewer);
+        mapViewer.addMouseListener(mia);
+        mapViewer.addMouseMotionListener(mia);
+        mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
+        mapViewer.addMouseListener(new PanMouseInputListener(mapViewer));
+        mapViewer.addMouseMotionListener(new PanMouseInputListener(mapViewer));
 
-        // Optional: Add click detection
         mapViewer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 Point mousePoint = e.getPoint();
@@ -75,11 +78,20 @@ public class MapPnl extends JPanel{
                 }
             }
         });
-
         return mapViewer;
     }
 
-    // 👇 Custom painter class for both route and labels
+    private JButton createBackButton(TravelApp app) {
+        JButton backBtn = new JButton("Back");
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setBackground(new Color(173, 216, 230));
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.setFont(backBtn.getFont().deriveFont(Font.PLAIN, 22));
+        backBtn.addActionListener(e -> app.showPanel("Home"));
+        return backBtn;
+    }
+
     static class MapOverlayPainter implements Painter<JXMapViewer> {
         private final List<GeoPosition> routePoints;
         private final Map<GeoPosition, String> labeledPoints;
@@ -109,7 +121,6 @@ public class MapPnl extends JPanel{
                 prev = new Point(x, y);
             }
 
-            // Draw labeled waypoints
             for (Entry<GeoPosition, String> entry : labeledPoints.entrySet()) {
                 Point2D pt = map.getTileFactory().geoToPixel(entry.getKey(), map.getZoom());
                 int x = (int) (pt.getX() - viewport.getX());
@@ -125,5 +136,3 @@ public class MapPnl extends JPanel{
         }
     }
 }
-
-*/

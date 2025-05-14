@@ -8,44 +8,43 @@ public class AccomodationPnl extends JPanel {
 
     public AccomodationPnl(TravelApp app) {
         setLayout(new BorderLayout());
-        setBackground(new Color(245, 245, 250)); // soft background color
+        setBackground(new Color(245, 245, 250)); 
         
-
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding around the panel
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
         
         // Back Button Panel
         JPanel backBtnPanel = new JPanel();
-        backBtnPanel.setLayout(new BoxLayout(backBtnPanel, BoxLayout.Y_AXIS)); // Align vertically
-        backBtnPanel.setOpaque(false); // Match the background of the top panel
+        backBtnPanel.setLayout(new BoxLayout(backBtnPanel, BoxLayout.Y_AXIS)); 
+        backBtnPanel.setOpaque(false); 
         JButton backBtn = createBackButton(app);
-        backBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the button vertically
+        backBtn.setAlignmentX(Component.CENTER_ALIGNMENT); 
         backBtnPanel.add(backBtn);
         
         // Title Label
         JLabel title = new JLabel("Available Accommodations", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 36f));
-        title.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10)); // Adjust padding for better alignment
+        title.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10)); 
         
-        // Add components to the top panel
-        topPanel.add(backBtnPanel, BorderLayout.WEST); // Add the back button to the left
-        topPanel.add(title, BorderLayout.CENTER); // Add the title to the center
         
-        add(topPanel, BorderLayout.NORTH); // Add the top panel to the main layout
+        topPanel.add(backBtnPanel, BorderLayout.WEST); 
+        topPanel.add(title, BorderLayout.CENTER); 
+        
+        add(topPanel, BorderLayout.NORTH); 
 
-        JPanel hotelsPanel = new JPanel(new GridLayout(0, 2, 20, 20)); // 2 per row
+        JPanel hotelsPanel = new JPanel(new GridLayout(0, 2, 20, 20)); 
         hotelsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        hotelsPanel.setBackground(new Color(245, 245, 250)); // match background
+        hotelsPanel.setBackground(new Color(245, 245, 250)); 
 
         // Add hotel cards
         hotelsPanel.add(createHotelCard("Grand Palace Hotel", "Images/hotel1.png", "Luxury stay in the heart of the city."));
         hotelsPanel.add(createHotelCard("Ocean View Resort", "Images/hostel.jpg", "Relax by the beach with premium service."));
         hotelsPanel.add(createHotelCard("Mountain Escape Lodge", "Images/hotel2.jpg", "Cozy mountain views and fresh air."));
-        hotelsPanel.add(createHotelCard("City Budget Inn", "Images/hostel.jpg", "Affordable and close to transport."));
+        hotelsPanel.add(createHotelCard("City Budget Inn", "Images/hotel3.jpeg", "Affordable and close to transport."));
 
         JScrollPane scrollPane = new JScrollPane(hotelsPanel);
-        scrollPane.setBorder(null); // clean look
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // smoother scroll
+        scrollPane.setBorder(null); 
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); 
 
         add(scrollPane, BorderLayout.CENTER);
     }
@@ -108,7 +107,6 @@ public class AccomodationPnl extends JPanel {
         desc.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(desc);
 
-        // Book Now button
         JButton bookBtn = new JButton("Book Now");
         bookBtn.putClientProperty("JButton.buttonType", "default");
         bookBtn.setAlignmentX(Component.CENTER_ALIGNMENT);

@@ -45,7 +45,7 @@ public class AttractionPnl extends JPanel {
         wrapperPanel.add(topPanel, BorderLayout.NORTH);
         
         JPanel spacer = new JPanel();
-        spacer.setPreferredSize(new Dimension(0, 20)); // Height: 20px
+        spacer.setPreferredSize(new Dimension(0, 20)); 
         spacer.setOpaque(false);
         wrapperPanel.add(spacer, BorderLayout.SOUTH);
 

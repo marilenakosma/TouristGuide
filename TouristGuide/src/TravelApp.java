@@ -25,7 +25,7 @@ public class TravelApp {
         contentPnl.add(new TransportationPnl(this),"Transportation");
         contentPnl.add(new AccomodationPnl(this),"Accomodation");
         contentPnl.add(new AttractionPnl(this),"Attractions");
-        //contentPnl.add(new MapPnl(),"City Map");
+        contentPnl.add(new MapPnl(this),"City Map");
         
         cardLayout.show(contentPnl, "Home");
 
@@ -47,19 +47,17 @@ public class TravelApp {
             URL fontURL = TravelApp.class.getClassLoader().getResource("fonts/Montserrat-Light.ttf");
 
             if (fontURL != null) {
-                // Create the font using the input stream
                 InputStream fontStream = fontURL.openStream();
                 Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-                customFont = customFont.deriveFont(25f); // Set the font size
+                customFont = customFont.deriveFont(25f); 
 
-                // Apply font globally
                 UIManager.put("Button.font", customFont);
                 UIManager.put("Label.font", customFont);
                 UIManager.put("TextField.font", customFont);
                 UIManager.put("TextArea.font", customFont);
-                UIManager.put("TitlePane.font", new Font("Segoe UI", Font.PLAIN, 14)); // or any nice sans-serif
-                UIManager.put("Button.arc", 20);       // Rounder buttons
-                UIManager.put("Component.arc", 10);    // Rounder scroll panes, fields
+                UIManager.put("TitlePane.font", new Font("Segoe UI", Font.PLAIN, 14)); 
+                UIManager.put("Button.arc", 20);      
+                UIManager.put("Component.arc", 10);   
                 UIManager.put("TextComponent.arc", 10);
 
             } else {

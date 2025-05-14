@@ -10,18 +10,17 @@ public class HomePanel extends JPanel {
     private Image backgroundImage;
     public HomePanel(TravelApp app) {
 
-      // Load the background image using ClassLoader
       try {
-        // Load the image from the resources folder
+       
         URL imageURL = getClass().getClassLoader().getResource("Images/back1.png");
         
         if (imageURL != null) {
-            backgroundImage = ImageIO.read(imageURL); // Read the image
+            backgroundImage = ImageIO.read(imageURL); 
         } else {
-            System.out.println("Image not found!");  // If the image is not found, print a message
+            System.out.println("Image not found!");  
         }
     } catch (IOException e) {
-        e.printStackTrace();  // Handle any IO exceptions
+        e.printStackTrace();  
     }
  
         JPanel overlay = new JPanel();
@@ -45,7 +44,6 @@ public class HomePanel extends JPanel {
         JButton MapBtn = createButton("City Map","Images/Map.png");
         MapBtn.addActionListener(e -> app.showPanel("City Map"));
 
-
         overlay.add(title);
         overlay.add(Box.createVerticalStrut(20));
         overlay.add(TranspBtn);
@@ -67,7 +65,7 @@ public class HomePanel extends JPanel {
         
         button.putClientProperty("JComponent.roundRect", true);
         button.setMaximumSize(new Dimension(400, 80));
-        button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center button
+        button.setAlignmentX(Component.CENTER_ALIGNMENT); 
         
         button.addMouseListener(new MouseAdapter() {
          public void mouseEntered(MouseEvent evt) {
@@ -93,7 +91,7 @@ public class HomePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // If the background image is loaded, draw it
+        
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
