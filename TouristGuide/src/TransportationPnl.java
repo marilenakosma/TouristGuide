@@ -146,14 +146,56 @@ public class TransportationPnl extends JPanel {
         }
         
         //from = from.trim().toLowerCase();
-       // to = to.trim().toLowerCase();
+       // to = to.trim();
 
         if(from.equals(to)) {
             JOptionPane.showMessageDialog(this,"Start and destination location cannot be the same!","Error",JOptionPane.ERROR_MESSAGE);
             return;
         }
-       String routeKey = from + "-" + to;
-       List<GeoPosition> route = routes.get(routeKey);
+
+        List<GeoPosition> route;
+        if(mode.equalsIgnoreCase("plane")) {
+            Map<String,GeoPosition> airports = new HashMap<>();
+            airports.put("Brasov",new GeoPosition(45.691, 25.516));
+            airports.put("Bucharest",new GeoPosition(44.572161, 26.102178));
+            airports.put("Cluj",new GeoPosition( 46.785, 23.68611));
+            airports.put("Sibiu",new GeoPosition(45.7856, 24.0914));
+
+            GeoPosition fromAirport = airports.get(from);
+            GeoPosition toAirport = airports.get(to);
+
+            if (fromAirport == null || toAirport == null) {
+                JOptionPane.showMessageDialog(this,"Airport not found for one of the selected cities.Please try another way of transport.","Error",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            route = Arrays.asList(fromAirport,toAirport);
+
+        } 
+        else if(mode.equalsIgnoreCase("train")) {
+            Map<String,GeoPosition> trainStations = new HashMap<>();
+            trainStations.put("Brasov",new GeoPosition(45.66115,25.61353));
+            trainStations.put("Cluj",new GeoPosition(46.785, 23.68611));
+            trainStations.put("Sibiu",new GeoPosition(45.800058, 24.161773));
+            trainStations.put("Bucharest", new GeoPosition(44.43525, 27.054838));
+
+            GeoPosition fromStation = trainStations.get(from);
+            GeoPosition toStation = trainStations.get(to);
+
+            if (fromStation == null || toStation == null) {
+                JOptionPane.showMessageDialog(this,"Train not found for one of the selected cities.Please try another way of transport.","Error",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            route = Arrays.asList(fromStation,toStation);
+        }
+        else {
+            String routeKey = from + "-" + to;
+            route = routes.get(routeKey);
+        }
+
+        if (route == null) {
+            JOptionPane.showMessageDialog(this, "No route found between " + from + " and " + to + "!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         updateRoute(route);
 
@@ -162,7 +204,7 @@ public class TransportationPnl extends JPanel {
 
 
     private JXMapViewer createMapViewer() {
-         mapViewer = new JXMapViewer();
+        mapViewer = new JXMapViewer();
         mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
         mapViewer.setZoom(5);
         //mapViewer.setZoomEnabled(true);
@@ -170,18 +212,42 @@ public class TransportationPnl extends JPanel {
 
         // Locations
         labeledPoints = new HashMap<>();
-        GeoPosition airport = new GeoPosition(45.691,25.516);
-        GeoPosition train = new GeoPosition(45.66115,25.61353);
+        GeoPosition airportBrasov = new GeoPosition(45.691,25.516);
+        GeoPosition airportCluj = new GeoPosition(46.785, 23.68611);
+        GeoPosition airportSibiu = new GeoPosition(45.7856, 24.0914);
+        GeoPosition airportBucharest = new GeoPosition(44.572161, 26.102178);
+
+        GeoPosition trainBrasov = new GeoPosition(45.66115,25.61353);
+        GeoPosition trainCluj = new GeoPosition(46.784366, 23.586386);
+        GeoPosition trainSibiu = new GeoPosition(45.800058, 24.161773);
+        GeoPosition trainBucharest = new GeoPosition(44.43525, 27.054838);
+
         GeoPosition museum = new GeoPosition(45.67, 25.62);
     
-        labeledPoints.put(airport, "Airport");
-        labeledPoints.put(train, "Train Station");
+        labeledPoints.put(airportBrasov, "Airport");
+        labeledPoints.put(airportCluj, "Airport");
+        labeledPoints.put(airportSibiu, "Airport");
+        labeledPoints.put(airportBucharest, "Airport");
+
+        labeledPoints.put(trainBrasov, "Train Station");
+        labeledPoints.put(trainCluj, "Train Station");
+        labeledPoints.put(trainSibiu, "Train Station");
+        labeledPoints.put(trainBucharest, "Train Station");
+
         labeledPoints.put(museum, "Museum");
         
         Map<GeoPosition,BufferedImage> markerImages = new HashMap<>();
         try {
-           markerImages.put(airport,loadImage("images/airport.png"));
-           markerImages.put(train,loadImage("images/metro.png"));
+           markerImages.put(airportBrasov,loadImage("images/airport.png"));
+           markerImages.put(airportCluj,loadImage("images/airport.png"));
+           markerImages.put(airportSibiu,loadImage("images/airport.png"));
+           markerImages.put(airportBucharest,loadImage("images/airport.png"));
+
+           markerImages.put(trainBrasov,loadImage("images/metro.png"));
+           markerImages.put(trainCluj,loadImage("images/metro.png"));
+           markerImages.put(trainSibiu,loadImage("images/metro.png"));
+           markerImages.put(trainBucharest,loadImage("images/metro.png"));
+
            markerImages.put(museum,loadImage("images/museum.png"));
 
         }

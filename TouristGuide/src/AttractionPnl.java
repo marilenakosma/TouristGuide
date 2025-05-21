@@ -143,6 +143,7 @@ public class AttractionPnl extends JPanel {
         info.setWrapStyleWord(true);
         info.setEditable(false);
         info.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        //info.setFont(info.getFont().deriveFont(Font.PLAIN, 10));
         info.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         //info.setBackground(new Color(245,245,245));
         
