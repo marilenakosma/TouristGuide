@@ -1,12 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import com.formdev.flatlaf.FlatLightLaf;
-
-
 public class TravelApp {
   private JFrame frame;
   private JPanel contentPnl;
@@ -66,9 +62,6 @@ public class TravelApp {
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
-        //Font customFont = new Font("Helvetica", Font.PLAIN, 16);
-        //UIManager.put("Button.font", customFont);
-       // UIManager.put("Label.font", customFont);
 
         SwingUtilities.invokeLater(TravelApp::new);
     }

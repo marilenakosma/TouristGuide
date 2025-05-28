@@ -9,7 +9,6 @@ import org.jxmapviewer.painter.Painter;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -131,9 +130,6 @@ public class AttractionPnl extends JPanel {
     private void showAttractionDetails(Attraction attr) {
         JDialog dialog = new JDialog((Frame) null, attr.name, true);
         dialog.setLayout(new BorderLayout());
-        //dialog.setUndecorated(true);
-       // dialog.getRootPane().setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(60,60,60),1),
-       // Border));
 
         JPanel imagePanel = new SlideshowPanel(attr.images);
 
@@ -143,9 +139,7 @@ public class AttractionPnl extends JPanel {
         info.setWrapStyleWord(true);
         info.setEditable(false);
         info.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        //info.setFont(info.getFont().deriveFont(Font.PLAIN, 10));
         info.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        //info.setBackground(new Color(245,245,245));
         
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));

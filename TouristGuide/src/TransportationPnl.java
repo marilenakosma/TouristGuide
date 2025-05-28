@@ -28,8 +28,7 @@ public class TransportationPnl extends JPanel {
     private Map<GeoPosition, String> labeledPoints;
 
     private TransportationControls controlsPnl;
-    private JButton AirportBtn,MuseumBtn;
-
+    private JButton AirportBtn;
     public TransportationPnl(TravelApp app) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -60,10 +59,8 @@ public class TransportationPnl extends JPanel {
         btnRowPanel.setOpaque(false);
 
         AirportBtn = createButton("Images/Metro.png","to","Images/airport.png");
-        MuseumBtn = createButton("Images/Metro.png","to","Images/museum.png");
 
         btnRowPanel.add(AirportBtn);
-        btnRowPanel.add(MuseumBtn);
 
         JPanel btnPanel = new JPanel();
         btnPanel.setLayout(new BoxLayout(btnPanel,BoxLayout.Y_AXIS));
@@ -144,9 +141,7 @@ public class TransportationPnl extends JPanel {
             JOptionPane.showMessageDialog(this,"Please select all options!","Error",JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        //from = from.trim().toLowerCase();
-       // to = to.trim();
+
 
         if(from.equals(to)) {
             JOptionPane.showMessageDialog(this,"Start and destination location cannot be the same!","Error",JOptionPane.ERROR_MESSAGE);
@@ -207,10 +202,8 @@ public class TransportationPnl extends JPanel {
         mapViewer = new JXMapViewer();
         mapViewer.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
         mapViewer.setZoom(5);
-        //mapViewer.setZoomEnabled(true);
         mapViewer.setAddressLocation(new GeoPosition(45.658, 25.601));
 
-        // Locations
         labeledPoints = new HashMap<>();
         GeoPosition airportBrasov = new GeoPosition(45.691,25.516);
         GeoPosition airportCluj = new GeoPosition(46.785, 23.68611);
@@ -222,7 +215,6 @@ public class TransportationPnl extends JPanel {
         GeoPosition trainSibiu = new GeoPosition(45.800058, 24.161773);
         GeoPosition trainBucharest = new GeoPosition(44.43525, 27.054838);
 
-        GeoPosition museum = new GeoPosition(45.67, 25.62);
     
         labeledPoints.put(airportBrasov, "Airport");
         labeledPoints.put(airportCluj, "Airport");
@@ -234,7 +226,6 @@ public class TransportationPnl extends JPanel {
         labeledPoints.put(trainSibiu, "Train Station");
         labeledPoints.put(trainBucharest, "Train Station");
 
-        labeledPoints.put(museum, "Museum");
         
         Map<GeoPosition,BufferedImage> markerImages = new HashMap<>();
         try {
@@ -248,7 +239,6 @@ public class TransportationPnl extends JPanel {
            markerImages.put(trainSibiu,loadImage("images/metro.png"));
            markerImages.put(trainBucharest,loadImage("images/metro.png"));
 
-           markerImages.put(museum,loadImage("images/museum.png"));
 
         }
         catch(IOException e) {
@@ -273,7 +263,7 @@ public class TransportationPnl extends JPanel {
                     int x = (int) (geoPoint.getX() - viewport.getX());
                     int y = (int) (geoPoint.getY() - viewport.getY());
 
-                    if (mousePoint.distance(x, y) < 10) {
+                    if (mousePoint.distance(x, y) < 20) {
                         JOptionPane.showMessageDialog(mapViewer, entry.getValue(), "Location Info", JOptionPane.INFORMATION_MESSAGE);
                         break;
                     }
@@ -304,13 +294,11 @@ public class TransportationPnl extends JPanel {
             this.routePoints.addAll(points);
         }
           
-
         @Override
         public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
             Graphics2D g2 = (Graphics2D) g.create();
             Rectangle viewport = map.getViewportBounds();
 
-            // Draw lines
             g2.setColor(Color.BLUE);
             g2.setStroke(new BasicStroke(2));
             Point2D prev = null;
@@ -339,8 +327,7 @@ public class TransportationPnl extends JPanel {
                 }
                 else {
                     g2.setColor(Color.RED);
-                    g2.fillOval(x - 5, y - 5, 10, 10);
-                    
+                    g2.fillOval(x - 5, y - 5, 10, 10);              
                 }
                 Font labelFont = new Font("Segoe UI",Font.BOLD,14);
                 g2.setFont(labelFont);
@@ -371,7 +358,6 @@ public class TransportationPnl extends JPanel {
 
     }
 
-    // Button creator
     private JButton createButton(String iconPath_to,String text,String iconPath_from) {
         JButton button = new JButton(text);
         button.putClientProperty("JButton.buttonType", "roundRect");
@@ -402,13 +388,12 @@ public class TransportationPnl extends JPanel {
 
             int width = iconWidth + 8 + textWidth + 8 + iconWidth;
             int height = Math.max(iconHeight,textHeight);
-           //Using g2 instead of g (parent) because it can handle anti-aliasing 
+
             BufferedImage combinedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = combinedImage.createGraphics();
 
             g2.setFont(font);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
 
             g2.drawImage(scaledTo, 0, (height - iconHeight) / 2, null);
 
@@ -449,13 +434,6 @@ public class TransportationPnl extends JPanel {
             updateRoute(route);
         });
     
-        MuseumBtn.addActionListener(e -> {
-            List<GeoPosition> route = Arrays.asList(
-                new GeoPosition(45.66115, 25.61353), // Train Station
-                new GeoPosition(45.67, 25.62)        // Museum
-            );
-            updateRoute(route);
-        });
     }
     
 }
