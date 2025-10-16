@@ -13,7 +13,6 @@ public class AccomodationPnl extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
         
-        // Back Button Panel
         JPanel backBtnPanel = new JPanel();
         backBtnPanel.setLayout(new BoxLayout(backBtnPanel, BoxLayout.Y_AXIS)); 
         backBtnPanel.setOpaque(false); 
@@ -21,11 +20,9 @@ public class AccomodationPnl extends JPanel {
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT); 
         backBtnPanel.add(backBtn);
         
-        // Title Label
         JLabel title = new JLabel("Available Accommodations", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 36f));
         title.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10)); 
-        
         
         topPanel.add(backBtnPanel, BorderLayout.WEST); 
         topPanel.add(title, BorderLayout.CENTER); 
@@ -36,7 +33,6 @@ public class AccomodationPnl extends JPanel {
         hotelsPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         hotelsPanel.setBackground(new Color(245, 245, 250)); 
 
-        // Add hotel cards
         hotelsPanel.add(createHotelCard("Grand Palace Hotel", "Images/hotel1.png", "Luxury stay in the heart of the city."));
         hotelsPanel.add(createHotelCard("Ocean View Resort", "Images/hostel.jpg", "Relax by the beach with premium service."));
         hotelsPanel.add(createHotelCard("Mountain Escape Lodge", "Images/hotel2.jpg", "Cozy mountain views and fresh air."));
@@ -74,7 +70,6 @@ public class AccomodationPnl extends JPanel {
         ));
         card.setMaximumSize(new Dimension(400, 300));
 
-        // Load image
         try {
             URL imageUrl = getClass().getClassLoader().getResource(imagePath);
             if (imageUrl != null) {
@@ -90,14 +85,12 @@ public class AccomodationPnl extends JPanel {
             card.add(new JLabel("Error loading image"));
         }
 
-        // Hotel name
         JLabel nameLabel = new JLabel(name);
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 20f));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
         card.add(nameLabel);
 
-        // Description
         JTextArea desc = new JTextArea(description);
         desc.setLineWrap(true);
         desc.setWrapStyleWord(true);

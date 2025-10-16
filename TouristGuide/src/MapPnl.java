@@ -22,7 +22,6 @@ public class MapPnl extends JPanel {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-
         JPanel topPanel = new JPanel(new BorderLayout());
 
         JButton backBtn = createBackButton(app);
@@ -106,7 +105,6 @@ public class MapPnl extends JPanel {
             Graphics2D g2 = (Graphics2D) g.create();
             Rectangle viewport = map.getViewportBounds();
 
-            // Draw route lines
             g2.setColor(Color.BLUE);
             g2.setStroke(new BasicStroke(2));
             Point2D prev = null;

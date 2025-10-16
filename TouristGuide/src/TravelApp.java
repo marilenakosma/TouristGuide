@@ -39,7 +39,6 @@ public class TravelApp {
             System.err.println("Failed to initialize LaF: " + e.getMessage());
         }
          try {
-            // Use class loader to find the font resource
             URL fontURL = TravelApp.class.getClassLoader().getResource("fonts/Montserrat-Light.ttf");
 
             if (fontURL != null) {

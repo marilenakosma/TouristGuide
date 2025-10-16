@@ -34,7 +34,7 @@ public class TransportationPnl extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         initializeRoutes();
-        // Title + Back
+
         JButton backBtn = createBackButton(app);
         JPanel topPanel = new JPanel(new BorderLayout());
         JLabel title = new JLabel("Available Transportation Options", SwingConstants.CENTER);
@@ -142,7 +142,6 @@ public class TransportationPnl extends JPanel {
             return;
         }
 
-
         if(from.equals(to)) {
             JOptionPane.showMessageDialog(this,"Start and destination location cannot be the same!","Error",JOptionPane.ERROR_MESSAGE);
             return;
@@ -214,7 +213,6 @@ public class TransportationPnl extends JPanel {
         GeoPosition trainCluj = new GeoPosition(46.784366, 23.586386);
         GeoPosition trainSibiu = new GeoPosition(45.800058, 24.161773);
         GeoPosition trainBucharest = new GeoPosition(44.43525, 27.054838);
-
     
         labeledPoints.put(airportBrasov, "Airport");
         labeledPoints.put(airportCluj, "Airport");
@@ -226,7 +224,6 @@ public class TransportationPnl extends JPanel {
         labeledPoints.put(trainSibiu, "Train Station");
         labeledPoints.put(trainBucharest, "Train Station");
 
-        
         Map<GeoPosition,BufferedImage> markerImages = new HashMap<>();
         try {
            markerImages.put(airportBrasov,loadImage("images/airport.png"));
@@ -238,7 +235,6 @@ public class TransportationPnl extends JPanel {
            markerImages.put(trainCluj,loadImage("images/metro.png"));
            markerImages.put(trainSibiu,loadImage("images/metro.png"));
            markerImages.put(trainBucharest,loadImage("images/metro.png"));
-
 
         }
         catch(IOException e) {
