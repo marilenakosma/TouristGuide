@@ -31,3 +31,19 @@ A Java Swing-based desktop application that allows users to plan transportation 
    ```bash
    git clone https://github.com/your-username/travel-app.git
    cd travel-app
+
+
+### Home Page
+![Main Menu](bin/Images/Home.png)
+
+### Login Page
+![Login Page](Assets/Screenshots/login_screen.png)
+
+### Main Menu
+![Main Menu](Assets/Screenshots/main_menu.png)
+
+### Quiz Screen
+![Main Menu](Assets/Screenshots/quiz_screen.png)
+
+### Quiz Complete
+![Main Menu](Assets/Screenshots/quiz_complete.png)
