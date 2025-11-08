@@ -39,11 +39,8 @@ A Java Swing-based desktop application that allows users to plan transportation 
 ### Accomodation Page
 ![Accomodation Page](TouristGuide/src/Images/AccomodationPnl.png)
 
-### Main Menu
-![Main Menu](Assets/Screenshots/main_menu.png)
+### Tourist Attractions Page
+![Tourist Attractions Page](TouristGuide/src/Images/AttractionPnl.png)
 
-### Quiz Screen
-![Main Menu](Assets/Screenshots/quiz_screen.png)
-
-### Quiz Complete
-![Main Menu](Assets/Screenshots/quiz_complete.png)
+### Transportation Page
+![Transportation Page](TouristGuide/src/Images/TransportationPnl.png)
