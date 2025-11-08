@@ -34,7 +34,7 @@ A Java Swing-based desktop application that allows users to plan transportation 
 
 
 ### Home Page
-![Main Menu](Images/Home.png)
+![Main Menu](TouristGuide/bin/Images/Home.png)
 
 ### Login Page
 ![Login Page](Assets/Screenshots/login_screen.png)
