@@ -20,7 +20,7 @@ A Java Swing-based desktop application that allows users to plan transportation 
 
 - **Java Swing** – UI components
 - **JXMapViewer2** – Map rendering and interaction
-- **Maven** (optional) – Dependency management
+- **Maven**  – Dependency management
 - **Java 8+**
 
 ---
