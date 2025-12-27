@@ -25,13 +25,6 @@ A Java Swing-based desktop application that allows users to plan transportation 
 
 ---
 
-## 📦 Installation
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/travel-app.git
-   cd travel-app
-
 
 ### Home Page
 ![Main Menu](TouristGuide/src/Images/Home.png)
