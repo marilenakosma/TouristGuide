@@ -18,7 +18,7 @@ A Java Swing-based desktop application that allows users to plan transportation 
 
 ## 🧭 Technologies Used
 
-- **Java Swing** – UI components
+- **Java Swing and Flatlaf** – UI components
 - **JXMapViewer2** – Map rendering and interaction
 - **Maven**  – Dependency management
 - **Java 8+**
