@@ -1,6 +1,6 @@
 # Travel App
 
-A Java Swing-based desktop application that allows users to plan transportation routes between major Romanian cities. The app features an interactive map (powered by JXMapViewer) and a user-friendly interface for selecting destinations and modes of transport.
+A Java Swing-based desktop application that allows users to simulate transportation routes between major Romanian cities. The app features an interactive map (powered by JXMapViewer) and a user-friendly interface for selecting destinations and modes of transport.
 
 ---
 
