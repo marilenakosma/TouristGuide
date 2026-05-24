@@ -1,4 +1,4 @@
-# Travel App
+# Tourist Guide 
 
 An interactive, modern **Java Swing-based desktop application** designed to help users plan transit routes, search for accommodation, and discover popular travel attractions in **Romania** (specifically focused around Brasov). Powered by a custom OpenStreetMap rendering engine, modern typography, and a polished flat-themed GUI.
 
